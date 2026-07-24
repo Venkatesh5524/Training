@@ -17,12 +17,9 @@ class Program
          } else if (res > num) {
             Console.WriteLine ("Your Guess is too High");
          }
-         if (count > 6 && res != num) {
-            Console.WriteLine ("You are too slow");
-         }
          count++;
       } while (res != num);
-
+      Console.WriteLine ($"You Guessed Correctly in {count} tries.");
 
       int ReadInt () {
          for(; ; ) {
@@ -35,6 +32,6 @@ class Program
             
          }         
       }
-      Console.WriteLine ("You Guessed Correctly");
+      
    }
 }
