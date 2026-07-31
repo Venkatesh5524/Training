@@ -7,12 +7,9 @@ class Program
       char[] letters = new char[] { 'U', 'X', 'A', 'L', 'T', 'N', 'E' };
       string[] words = File.ReadAllLines (@"C:\Work\Training\A03\words 1.txt");
       Dictionary<string, int> result = new Dictionary<string, int> ();
-      foreach (string word in words) {
-         if (Is_Valid (word) == true) {
-            int score = Score (word);
-            result[word] = score;
-         }
-      }
+      foreach (string word in words) 
+         if (Is_Valid (word) == true)             
+            result[word] = Score (word);         
 
       var sorted_result = result.OrderByDescending (x => x.Value).ThenBy (x => x.Key);
       int total = 0;
@@ -22,13 +19,14 @@ class Program
          total += ans.Value;
          Console.WriteLine ($"{ans.Value,3}: {ans.Key}");
       }
+      Console.WriteLine ("----");
       Console.WriteLine ($"{total,3}: Total");
       
       bool Is_Valid (string word) {
          if (word.Length < 4) return false;
-         if (word.Contains (letters[0]) == false) return false;
+         if (!word.Contains (letters[0])) return false;
          foreach (char h in word) {
-            if (letters.Contains (h) == false) return false;
+            if (!letters.Contains (h)) return false;
          }
          return true;
       }
@@ -39,7 +37,7 @@ class Program
          if (len == 4) temp++;
          else if (len > 4 && len < 7) temp += len;
          else if (len >= 7) {
-            if (Panagram (word) == true) {
+            if (Panagram (word)) {
                temp = temp + len + 7;
             } else temp += len;
          }
@@ -47,9 +45,8 @@ class Program
       }
 
       bool Panagram (string word) {
-         foreach (char ch in letters) {
-            if (word.Contains (ch) == false) return false;
-         }
+         foreach (char ch in letters) 
+            if (!word.Contains (ch)) return false;         
          return true;
       }
    }
