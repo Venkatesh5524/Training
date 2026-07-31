@@ -11,7 +11,7 @@ class Program
             if (c >= 'A' && c <= 'Z') {
                if (!freq.ContainsKey (c)) {
                   freq[c] = 0;
-               }
+               } 
                freq[c]++;
             }
          }
@@ -22,5 +22,7 @@ class Program
          Console.WriteLine ($"{ch.Key} : {ch.Value}");
          tries++;
       }
+      Console.WriteLine ("Press any key to exit....");
+      Console.ReadKey ();
    }
 }
