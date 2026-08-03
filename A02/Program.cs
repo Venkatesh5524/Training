@@ -10,10 +10,11 @@ class Program {
    static void Main (string[] args) {
       int num = new Random ().Next (1, 101), res = 0, count = 0;
       do {
+         count++;
          Console.Write ("Enter your guess(1-100): ");
          res = ReadGuess ();
+         if(res == num) break;
          Console.WriteLine ($"Your Guess is too {(res < num ? "Low" :"High")}" );
-         count++;
       } while (res != num);
       Console.WriteLine ($"You Guessed Correctly in {count} tries.");
 
