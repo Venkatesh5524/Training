@@ -13,8 +13,8 @@ class Program {
          count++;
          Console.Write ("Enter your guess(1-100): ");
          res = ReadGuess ();
-         if(res == num) break;
-         Console.WriteLine ($"Your Guess is too {(res < num ? "Low" :"High")}" );
+         if (res == num) break;
+         Console.WriteLine ($"Your Guess is too {(res < num ? "Low" : "High")}");
       } while (res != num);
       Console.WriteLine ($"You Guessed Correctly in {count} tries.");
 
