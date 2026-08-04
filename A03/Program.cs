@@ -1,15 +1,13 @@
 ﻿namespace A03;
 
-class Program
-{
-    static void Main(string[] args)
-    {
+class Program {
+   static void Main (string[] args) {
       char[] letters = new char[] { 'U', 'X', 'A', 'L', 'T', 'N', 'E' };
-      string[] words = File.ReadAllLines (@"C:\Work\Training\A03\words 1.txt");
+      string[] words = File.ReadAllLines ("words.txt");
       Dictionary<string, int> result = new Dictionary<string, int> ();
-      foreach (string word in words) 
-         if (Is_Valid (word) == true)             
-            result[word] = Score (word);         
+      foreach (string word in words)
+         if (Is_Valid (word) == true)
+            result[word] = Score (word);
 
       var sorted_result = result.OrderByDescending (x => x.Value).ThenBy (x => x.Key);
       int total = 0;
@@ -21,7 +19,7 @@ class Program
       }
       Console.WriteLine ("----");
       Console.WriteLine ($"{total,3}: Total");
-      
+
       bool Is_Valid (string word) {
          if (word.Length < 4) return false;
          if (!word.Contains (letters[0])) return false;
@@ -45,8 +43,8 @@ class Program
       }
 
       bool Panagram (string word) {
-         foreach (char ch in letters) 
-            if (!word.Contains (ch)) return false;         
+         foreach (char ch in letters)
+            if (!word.Contains (ch)) return false;
          return true;
       }
    }
