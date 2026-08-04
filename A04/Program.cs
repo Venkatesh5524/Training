@@ -8,7 +8,7 @@ namespace A04;
 
 class Program {
    static void Main () {
-      string[] words = File.ReadAllLines (@"C:\Work\Training\A04\words 1.txt");
+      string[] words = File.ReadAllLines ("words.txt");
       Dictionary<char, int> freq = new ();
       foreach (string word in words) {
          foreach (char c in word) {
@@ -26,6 +26,5 @@ class Program {
          Console.WriteLine ($"{ch.Key} : {ch.Value}");
          tries++;
       }
-      Console.ReadKey ();
    }
 }
