@@ -1,4 +1,12 @@
-﻿namespace A03;
+﻿// ------------------------------------------------------------------------------------------------
+// Training ~ A training program for new joinees at Metamation, Batch- July 2026.
+// Copyright (c) Metamation India.
+// ------------------------------------------------------------------------------------------------
+// Program.cs
+// Program to find valid words from a given set of letters and
+// calculate their scores based on specific rules.
+// ------------------------------------------------------------------------------------------------
+namespace A03;
 
 class Program {
    static void Main (string[] args) {
@@ -20,6 +28,7 @@ class Program {
       Console.WriteLine ("----");
       Console.WriteLine ($"{total,3}: Total");
 
+      // Checks validity of the word
       bool Is_Valid (string word) {
          if (word.Length < 4) return false;
          if (!word.Contains (letters[0])) return false;
@@ -29,6 +38,7 @@ class Program {
          return true;
       }
 
+      // Calculates the score of the word
       int Score (string word) {
          int temp = 0;
          int len = word.Length;
@@ -42,6 +52,7 @@ class Program {
          return temp;
       }
 
+      // Checks if the word is a panagram
       bool Panagram (string word) {
          foreach (char ch in letters)
             if (!word.Contains (ch)) return false;
