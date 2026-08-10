@@ -4,26 +4,26 @@
 // -------------------------------------------------------------------------------------------------
 // Program.cs
 // Program to generate a random number between 1 and 100 and let the user guess it.
-namespace A02;
-
 class Program {
-   static void Main (string[] args) {
-      int num = new Random ().Next (1, 101), res = 0, count = 0;
-      do {
+   static void Main () {
+      int num = new Random ().Next (1, 101), guessedNum = 0, count = 0;
+      while (guessedNum != num) {
          count++;
-         Console.Write ("Enter your guess(1-100): ");
-         res = ReadGuess ();
-         if (res == num) break;
-         Console.WriteLine ($"Your Guess is too {(res < num ? "Low" : "High")}");
-      } while (res != num);
-      Console.WriteLine ($"You Guessed Correctly in {count} tries.");
+         Console.Write ("Enter your guess (1-100): ");
+         guessedNum = ValidGuess ();
+         if (guessedNum == num) break;
+         Console.WriteLine ($"Your guess is too {(guessedNum < num ? "low" : "high")}");
+      }
+      Console.WriteLine ($"You guessed correctly in {count} tries.");
+   }
 
-      int ReadGuess () {
-         for (; ; ) {
-            if (int.TryParse (Console.ReadLine (), out int result) && result >= 1 && result <= 100)
-               return result;
-            Console.Write ("Enter a valid Number: ");
-         }
+   //Reads the user input and validates it to be a number between 1 and 100.
+   static int ValidGuess () {
+      for (; ; ) {
+         if (int.TryParse (Console.ReadLine (), out int num) && num >= 1 && num <= 100)
+            return num;
+         Console.Write ("Enter a valid Number: ");
       }
    }
 }
+
