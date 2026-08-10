@@ -22,7 +22,7 @@ class Program {
       for (; ; ) {
          if (int.TryParse (Console.ReadLine (), out int num) && num >= 1 && num <= 100)
             return num;
-         Console.Write ("Enter a valid Number: ");
+         Console.Write ("Enter a valid number: ");
       }
    }
 }
