@@ -11,9 +11,9 @@ class Program {
       while (guessedNum != num) {
          Console.Write ("Enter your guess (1-100): ");
          guessedNum = ValidGuess ();
+         count++;
          if (guessedNum == num) break;
          Console.WriteLine ($"Your guess is too {(guessedNum < num ? "low" : "high")}");
-         count++;
       }
       Console.WriteLine ($"You guessed correctly in {count} tries.");
 
