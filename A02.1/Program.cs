@@ -18,7 +18,6 @@ class Program {
       while (low <= high) {
          int guess = low + (high - low) / 2;
          Display ($"Is your number {guess,3} (Y)es (H)igh (L)ow: ", ConsoleColor.Yellow);
-         ResetColor ();
          ConsoleKey response;
          do response = ReadKey (true).Key;
          while (!(response is ConsoleKey.Y or ConsoleKey.L or ConsoleKey.H));
