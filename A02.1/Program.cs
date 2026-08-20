@@ -7,9 +7,9 @@
 // ------------------------------------------------------------------------------------------------
 using System.Drawing;
 using static System.Console;
-#region Program------------------------------------------------------
+#region Program ------------------------------------------------------
 class Program {
-   #region Methods---------------------------------------------------
+   #region Methods ---------------------------------------------------
    static void Main () {
       int low = MINVALUE, high = MAXVALUE;
       WriteLine ($"Think of a number between {low} and {high}: ");
@@ -17,7 +17,7 @@ class Program {
                  "\nY: If guessed correctly ");
       while (low <= high) {
          int guess = low + (high - low) / 2;
-         Display ($"Is your number {guess,3} (Y)es (H)igh (L)ow: ",ConsoleColor.Yellow);
+         Display ($"Is your number {guess,3} (Y)es (H)igh (L)ow: ", ConsoleColor.Yellow);
          ResetColor ();
          ConsoleKey response;
          do response = ReadKey (true).Key;
@@ -25,7 +25,7 @@ class Program {
          WriteLine (response);
          switch (response) {
             case ConsoleKey.Y:
-               Display ($"I guessed it, your number is {guess}.",ConsoleColor.Green);
+               Display ($"I guessed it, your number is {guess}.", ConsoleColor.Green);
                return;
             case ConsoleKey.H:
                low = guess + 1; break;
@@ -33,18 +33,18 @@ class Program {
                high = guess - 1; break;
          }
       }
-      Display ("Hints are inconsistent. Please Try again",ConsoleColor.Red);
+      Display ("Hints are inconsistent. Please Try again", ConsoleColor.Red);
    }
 
    // Displays the message in the specified color.
-   static void Display(string message, ConsoleColor color) {
+   static void Display (string message, ConsoleColor color) {
       ForegroundColor = color;
       Write (message);
-      ResetColor();
+      ResetColor ();
    }
-#endregion
+   #endregion
 
-   #region const-----------------------------------------------------
+   #region const -----------------------------------------------------
    const int MINVALUE = 1;
    const int MAXVALUE = 100;
    #endregion
