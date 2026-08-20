@@ -5,22 +5,27 @@
 // Program.cs
 // Program to guess a number thought of by the user between 1 and 100 using binary search.
 // ------------------------------------------------------------------------------------------------
+using System.Drawing;
 using static System.Console;
-
+#region Program------------------------------------------------------
 class Program {
+   #region Methods---------------------------------------------------
    static void Main () {
-      int low = 1, high = 100, guess;
-      Write ($"Think of a number between {low} and {high}: " +
-             "\nH: If the number is greater than guess\nL: If the number is less than guess" +
-             "\nY: If guessed correctly ");
-      ConsoleKey response;
+      int low = MINVALUE, high = MAXVALUE;
+      WriteLine ($"Think of a number between {low} and {high}: ");
+      WriteLine ("H: If the number is greater than guess\nL: If the number is less than guess" +
+                 "\nY: If guessed correctly ");
       while (low <= high) {
-         guess = (low + high) / 2;
-         Write ($"\nIs your number {guess,3} (Y)es (H)igh (L)ow: ");
-         response = VaildGuess ();
+         int guess = low + (high - low) / 2;
+         Display ($"Is your number {guess,3} (Y)es (H)igh (L)ow: ",ConsoleColor.Yellow);
+         ResetColor ();
+         ConsoleKey response;
+         do response = ReadKey (true).Key;
+         while (!(response is ConsoleKey.Y or ConsoleKey.L or ConsoleKey.H));
+         WriteLine (response);
          switch (response) {
             case ConsoleKey.Y:
-               WriteLine ($"\nI guessed it, your number is {guess}.");
+               Display ($"I guessed it, your number is {guess}.",ConsoleColor.Green);
                return;
             case ConsoleKey.H:
                low = guess + 1; break;
@@ -28,14 +33,20 @@ class Program {
                high = guess - 1; break;
          }
       }
-      WriteLine ("\nHints are inconsistent");
-
-      // Reads the user's input and returns a valid guess: Y (Yes), L (Low), or H (High).
-      static ConsoleKey VaildGuess () {
-         ConsoleKey key = 0;
-         while (!(key is ConsoleKey.Y or ConsoleKey.L or ConsoleKey.H)) key = ReadKey(true).Key ;
-         Write (key);
-         return key;
-      }
+      Display ("Hints are inconsistent. Please Try again",ConsoleColor.Red);
    }
+
+   // Displays the message in the specified color.
+   static void Display(string message, ConsoleColor color) {
+      ForegroundColor = color;
+      Write (message);
+      ResetColor();
+   }
+#endregion
+
+   #region const-----------------------------------------------------
+   const int MINVALUE = 1;
+   const int MAXVALUE = 100;
+   #endregion
 }
+#endregion
