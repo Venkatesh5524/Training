@@ -4,27 +4,22 @@
 // -------------------------------------------------------------------------------------------------
 // Program.cs
 // Program to find the occurence of all letters in word.txt and display the top 7 letters with their occurences.
-namespace A04;
 
+using static System.Console;
 class Program {
    static void Main () {
-      string[] words = File.ReadAllLines ("words.txt");
-      Dictionary<char, int> freq = new ();
-      foreach (string word in words) {
+      Dictionary<char, int> freq = [];
+      foreach (string word in File.ReadAllLines ("words.txt")) {
          foreach (char c in word) {
             if (c >= 'A' && c <= 'Z') {
-               if (!freq.ContainsKey (c)) {
-                  freq[c] = 0;
-               }
-               freq[c]++;
+               if (freq.TryGetValue (c, out int value)) freq[c]++;
+               else freq[c] = 0;
             }
          }
       }
-      int tries = 0;
-      foreach (var ch in freq.OrderByDescending (a => a.Value)) {
-         if (tries == 7) break;
-         Console.WriteLine ($"{ch.Key} : {ch.Value}");
-         tries++;
-      }
+      WriteLine ("Seven most frequently occuring letters and their occurences");
+      WriteLine ("Letter: Occurences");
+      foreach (var ch in freq.OrderByDescending (a => a.Value).Take (7))
+         Console.WriteLine ($"{ch.Key, 3} {":", 3} {ch.Value} occurences");
    }
 }
