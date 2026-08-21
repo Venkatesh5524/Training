@@ -12,7 +12,7 @@ class Program {
       foreach (string word in File.ReadAllLines ("words.txt")) {
          foreach (char c in word) {
             if (c >= 'A' && c <= 'Z') {
-               if (freq.TryGetValue (c, out int value)) freq[c]++;
+               if (freq.TryGetValue (c, out int value)) freq[c] = ++value;
                else freq[c] = 0;
             }
          }
