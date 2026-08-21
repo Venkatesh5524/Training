@@ -5,11 +5,13 @@
 // Program.cs
 // Program to guess a number thought of by the user between 1 and 100 using binary search.
 // ------------------------------------------------------------------------------------------------
-using System.Drawing;
+
 using static System.Console;
-#region Program ------------------------------------------------------
+
+#region Program -----------------------------------------------------
 class Program {
-   #region Methods ---------------------------------------------------
+
+   #region Methods --------------------------------------------------
    static void Main () {
       int low = MINVALUE, high = MAXVALUE;
       WriteLine ($"Think of a number between {low} and {high}: ");
@@ -20,16 +22,14 @@ class Program {
          Display ($"Is your number {guess,3} (Y)es (H)igh (L)ow: ", ConsoleColor.Yellow);
          ConsoleKey response;
          do response = ReadKey (true).Key;
-         while (!(response is ConsoleKey.Y or ConsoleKey.L or ConsoleKey.H));
+         while (response is not (ConsoleKey.Y or ConsoleKey.L or ConsoleKey.H));
          WriteLine (response);
          switch (response) {
             case ConsoleKey.Y:
                Display ($"I guessed it, your number is {guess}.", ConsoleColor.Green);
                return;
-            case ConsoleKey.H:
-               low = guess + 1; break;
-            default:
-               high = guess - 1; break;
+            case ConsoleKey.H: low = guess + 1; break;
+            case ConsoleKey.L: high = guess - 1; break;
          }
       }
       Display ("Hints are inconsistent. Please Try again", ConsoleColor.Red);
@@ -43,7 +43,7 @@ class Program {
    }
    #endregion
 
-   #region const -----------------------------------------------------
+   #region const ----------------------------------------------------
    const int MINVALUE = 1;
    const int MAXVALUE = 100;
    #endregion
