@@ -6,57 +6,34 @@
 // Program to find valid words from a given set of letters and
 // calculate their scores based on specific rules.
 // ------------------------------------------------------------------------------------------------
-namespace A03;
+using static System.Console;
 
 class Program {
-   static void Main (string[] args) {
-      char[] letters = new char[] { 'U', 'X', 'A', 'L', 'T', 'N', 'E' };
-      string[] words = File.ReadAllLines ("words.txt");
-      Dictionary<string, int> result = new Dictionary<string, int> ();
-      foreach (string word in words)
-         if (Is_Valid (word) == true)
-            result[word] = Score (word);
-
-      var sorted_result = result.OrderByDescending (x => x.Value).ThenBy (x => x.Key);
+   static void Main () {
+      char[] letters = ['U', 'X', 'A', 'L', 'T', 'N', 'E'];
+      Dictionary<string, int> result = [];
+      foreach (string word in File.ReadAllLines ("words.txt"))
+         if (IsValid (word) == true)
+            result[word] = GetScore (word);
       int total = 0;
-      foreach (var ans in sorted_result) {
-         if (Panagram (ans.Key) == true) Console.ForegroundColor = ConsoleColor.Green;
-         else Console.ResetColor ();
+      foreach (var ans in result.OrderByDescending (x => x.Value).ThenBy (x => x.Key)) {
+         if (IsPanagram (ans.Key) == true) ForegroundColor = ConsoleColor.Green;
+         else ResetColor ();
          total += ans.Value;
-         Console.WriteLine ($"{ans.Value,3}: {ans.Key}");
+         WriteLine ($"{ans.Value, 3}: {ans.Key}");
       }
-      Console.WriteLine ("----");
-      Console.WriteLine ($"{total,3}: Total");
+      WriteLine ("----");
+      WriteLine ($"{total, 3}: Total");
 
       // Checks validity of the word
-      bool Is_Valid (string word) {
-         if (word.Length < 4) return false;
-         if (!word.Contains (letters[0])) return false;
-         foreach (char h in word) {
-            if (!letters.Contains (h)) return false;
-         }
-         return true;
-      }
+      bool IsValid (string word)
+         => word.Length > 3 && word.Contains (letters[0]) && word.All (letters.Contains);
 
       // Calculates the score of the word
-      int Score (string word) {
-         int temp = 0;
-         int len = word.Length;
-         if (len == 4) temp++;
-         else if (len > 4 && len < 7) temp += len;
-         else if (len >= 7) {
-            if (Panagram (word)) {
-               temp = temp + len + 7;
-            } else temp += len;
-         }
-         return temp;
-      }
+      int GetScore (string word)
+         => word.Length == 4 ? 1 : IsPanagram (word) ? word.Length + 7 : word.Length;
 
       // Checks if the word is a panagram
-      bool Panagram (string word) {
-         foreach (char ch in letters)
-            if (!word.Contains (ch)) return false;
-         return true;
-      }
+      bool IsPanagram (string word) => letters.All (word.Contains);
    }
 }
