@@ -12,7 +12,7 @@ using static System.Console;
 #region Program -----------------------------------------------------
 class Program {
 
-   #region Methods -------------------------------------------------
+   #region Methods --------------------------------------------------
    static void Main () {
       int num = MAXVALUE;
       WriteLine ($"Think of a number between 1 and {num}");
@@ -39,7 +39,7 @@ class Program {
    }
    #endregion
 
-   #region const ---------------------------------------------------
+   #region const ----------------------------------------------------
    const int MINVALUE = 0;
    const int MAXVALUE = 100;
    #endregion
