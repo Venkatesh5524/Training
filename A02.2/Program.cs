@@ -23,7 +23,7 @@ class Program {
          WriteLine (response);
          if (response == ConsoleKey.N) guess += divisor;
       }
-      if (guess is < MINVALUE or > MAXVALUE)
+      if (guess < MINVALUE || guess > MAXVALUE)
          Display ("Hints are inconsistent. Please try again.", ConsoleColor.Red);
       else Display ($"I guessed it, your number is {guess}", ConsoleColor.Green);
    }
