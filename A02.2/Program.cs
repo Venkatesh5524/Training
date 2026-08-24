@@ -16,9 +16,9 @@ class Program {
       for (; ; ) {
          WriteLine ($"Think of a number between {MINVALUE} and {MAXVALUE}");
          int guess = 0;
-         for (int divisor = 1; divisor <= MAXVALUE; divisor *= 2) {
-            Display ($"The number when divided by {divisor * 2,3} is remainder {guess,3} " +
-                     $"(Y)es or (N)o: ", ConsoleColor.Yellow);
+         for (int divisor = 1; divisor <= MAXVALUE; divisor *= BINARYBASE) {
+            Display ($"The number when divided by {divisor * BINARYBASE,DISPWIDTH} is remainder " +
+                     $"{guess,DISPWIDTH} (Y)es or (N)o: ", ConsoleColor.Yellow);
             ConsoleKey response;
             while ((response = ReadKey (true).Key) is not (ConsoleKey.Y or ConsoleKey.N)) { }
             WriteLine (response);
@@ -46,6 +46,8 @@ class Program {
    #region const ----------------------------------------------------
    const int MINVALUE = 1;
    const int MAXVALUE = 100;
+   const int DISPWIDTH = 3;
+   const int BINARYBASE = 2;
    #endregion
 }
 #endregion
