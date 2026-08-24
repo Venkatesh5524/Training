@@ -3,7 +3,7 @@
 // Copyright (c) Metamation India.
 // ------------------------------------------------------------------------------------------------
 // Program.cs
-// Program to guess a number thought of by the user between 1 and 100 by determining it's
+// A02.2: Program to guess a number thought of by the user between 1 and 100 by determining it's
 // binary digits from least significant bit to most significant bit.
 // ------------------------------------------------------------------------------------------------
 
@@ -11,22 +11,19 @@ using static System.Console;
 
 #region Program -----------------------------------------------------
 class Program {
-
    #region Methods --------------------------------------------------
    static void Main () {
       int num = MAXVALUE;
       WriteLine ($"Think of a number between 1 and {num}");
-      int rem = MINVALUE;
-      for (int divisor = 1; divisor <= MAXVALUE; divisor *= 2) {
+      int rem = 0;
+      for (int divisor = 1; divisor <= num; divisor *= 2) {
          Display ($"The number when divided by {divisor * 2,3} is remainder {rem,3} " +
                   $"(Y)es or (N)o: ", ConsoleColor.Yellow);
          ConsoleKey response;
          do response = ReadKey (true).Key;
          while (response is not (ConsoleKey.Y or ConsoleKey.N));
          WriteLine (response);
-         if (response == ConsoleKey.N) {
-            rem += divisor;
-         }
+         if (response == ConsoleKey.N) rem += divisor;
       }
       Display ($"I guessed it, your number is {rem}", ConsoleColor.Green);
    }
@@ -40,7 +37,6 @@ class Program {
    #endregion
 
    #region const ----------------------------------------------------
-   const int MINVALUE = 0;
    const int MAXVALUE = 100;
    #endregion
 }
