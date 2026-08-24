@@ -19,7 +19,7 @@ class Program {
       List<int[]> allSolutions = [];
       List<int[]> uniqueSolutions = [];
       int[] rows = new int[n];
-      WriteLine ("Processing...  ");
+      Write ("Processing...  ");
       FindSolutions (0);
       foreach (int[] solution in allSolutions) {
          if (IsUnique (solution)) {
@@ -30,10 +30,10 @@ class Program {
       WriteLine ($"Total possible solutions for {n} queens: {allSolutions.Count}");
       WriteLine ($"Total unique solutions for {n} queens: {uniqueSolutions.Count}");
       Write ("Press (P) to see all possible solutions or (U) to see only unique solutions: ");
-      ConsoleKey key;
-      while((key = ReadKey (true).Key) is not ConsoleKey.P and not ConsoleKey.U) { }
-      WriteLine (key);
-      DisplaySolution (key == ConsoleKey.P ? allSolutions : uniqueSolutions);
+      ConsoleKey response;
+      while ((response = ReadKey (true).Key) is not ConsoleKey.P and not ConsoleKey.U) { }
+      WriteLine (response);
+      DisplaySolution (response == ConsoleKey.P ? allSolutions : uniqueSolutions);
 
       // Finds all possible N-Queens solutions
       void FindSolutions (int row) {
@@ -80,7 +80,8 @@ class Program {
       }
 
       // Checks whether the given solution already exists.
-      bool SolutionExists (int[] solution) => uniqueSolutions.Any (x => x.SequenceEqual (solution));
+      bool SolutionExists (int[] solution)
+         => uniqueSolutions.Any (x => x.SequenceEqual (solution));
 
       // Displays the solutions and allows navigation between them.
       void DisplaySolution (List<int[]> solutions) {
@@ -93,8 +94,8 @@ class Program {
             Write ("\nPress \u2192 to see the next solution... " +
                "\nPress \u2190 to see the previous solution... \nPress esc to exit... ");
             ConsoleKey key;
-            do key = ReadKey (true).Key;
-            while (key is not (ConsoleKey.RightArrow or ConsoleKey.LeftArrow or ConsoleKey.Escape));
+            while ((key = ReadKey (true).Key) is not (ConsoleKey.RightArrow or ConsoleKey.LeftArrow
+                                                                            or ConsoleKey.Escape));
             if (key == ConsoleKey.Escape) break;
             currSoln = key == ConsoleKey.RightArrow ? currSoln < solutions.Count - 1
                                                     ? currSoln + 1 : currSoln : currSoln > 0
