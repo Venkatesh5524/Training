@@ -13,19 +13,19 @@ using static System.Console;
 class Program {
    #region Methods --------------------------------------------------
    static void Main () {
-      int num = MAXVALUE;
-      WriteLine ($"Think of a number between 1 and {num}");
-      int rem = 0;
-      for (int divisor = 1; divisor <= num; divisor *= 2) {
-         Display ($"The number when divided by {divisor * 2,3} is remainder {rem,3} " +
+      WriteLine ($"Think of a number between {MINVALUE} and {MAXVALUE}");
+      int guess = 0;
+      for (int divisor = 1; divisor <= MAXVALUE; divisor *= 2) {
+         Display ($"The number when divided by {divisor * 2,3} is remainder {guess,3} " +
                   $"(Y)es or (N)o: ", ConsoleColor.Yellow);
          ConsoleKey response;
-         do response = ReadKey (true).Key;
-         while (response is not (ConsoleKey.Y or ConsoleKey.N));
+         while ((response = ReadKey (true).Key) is not (ConsoleKey.Y or ConsoleKey.N)) { }
          WriteLine (response);
-         if (response == ConsoleKey.N) rem += divisor;
+         if (response == ConsoleKey.N) guess += divisor;
       }
-      Display ($"I guessed it, your number is {rem}", ConsoleColor.Green);
+      if (guess is < MINVALUE or > MAXVALUE)
+         Display ("Hints are inconsistent. Please try again.", ConsoleColor.Red);
+      else Display ($"I guessed it, your number is {guess}", ConsoleColor.Green);
    }
 
    // Displays the message in the specified color.
@@ -37,6 +37,7 @@ class Program {
    #endregion
 
    #region const ----------------------------------------------------
+   const int MINVALUE = 1;
    const int MAXVALUE = 100;
    #endregion
 }
