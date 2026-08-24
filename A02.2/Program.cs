@@ -13,7 +13,7 @@ using static System.Console;
 class Program {
    #region Methods --------------------------------------------------
    static void Main () {
-      for(; ; ) {
+      for (; ; ) {
          WriteLine ($"Think of a number between {MINVALUE} and {MAXVALUE}");
          int guess = 0;
          for (int divisor = 1; divisor <= MAXVALUE; divisor *= 2) {
@@ -28,8 +28,9 @@ class Program {
             Display ($"I guessed it, your number is {guess}", ConsoleColor.Green);
             break;
          }
-         Display ("Hints are inconsistent. Press any key to try again.", ConsoleColor.Red);
-         ReadKey (true);
+         Display ("Hints are inconsistent. Press any key to try again or Esc to exit.",
+                  ConsoleColor.Red);
+         if (ReadKey (true).Key == ConsoleKey.Escape) break;
          Clear ();
       }
    }
