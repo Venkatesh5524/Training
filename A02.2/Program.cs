@@ -13,19 +13,25 @@ using static System.Console;
 class Program {
    #region Methods --------------------------------------------------
    static void Main () {
-      WriteLine ($"Think of a number between {MINVALUE} and {MAXVALUE}");
-      int guess = 0;
-      for (int divisor = 1; divisor <= MAXVALUE; divisor *= 2) {
-         Display ($"The number when divided by {divisor * 2,3} is remainder {guess,3} " +
-                  $"(Y)es or (N)o: ", ConsoleColor.Yellow);
-         ConsoleKey response;
-         while ((response = ReadKey (true).Key) is not (ConsoleKey.Y or ConsoleKey.N)) { }
-         WriteLine (response);
-         if (response == ConsoleKey.N) guess += divisor;
+      for(; ; ) {
+         WriteLine ($"Think of a number between {MINVALUE} and {MAXVALUE}");
+         int guess = 0;
+         for (int divisor = 1; divisor <= MAXVALUE; divisor *= 2) {
+            Display ($"The number when divided by {divisor * 2,3} is remainder {guess,3} " +
+                     $"(Y)es or (N)o: ", ConsoleColor.Yellow);
+            ConsoleKey response;
+            while ((response = ReadKey (true).Key) is not (ConsoleKey.Y or ConsoleKey.N)) { }
+            WriteLine (response);
+            if (response == ConsoleKey.N) guess += divisor;
+         }
+         if (guess >= MINVALUE && guess <= MAXVALUE) {
+            Display ($"I guessed it, your number is {guess}", ConsoleColor.Green);
+            break;
+         }
+         Display ("Hints are inconsistent. Press any key to try again.", ConsoleColor.Red);
+         ReadKey (true);
+         Clear ();
       }
-      if (guess < MINVALUE || guess > MAXVALUE)
-         Display ("Hints are inconsistent. Please try again.", ConsoleColor.Red);
-      else Display ($"I guessed it, your number is {guess}", ConsoleColor.Green);
    }
 
    // Displays the message in the specified color.
