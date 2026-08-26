@@ -43,13 +43,12 @@ class Program {
 
       // Finds all possible N-Queens solutions
       void FindSolutions (int row) {
-         for (int col = 0; col < n; col++) {
+         for (int col = 0; col < n; col++)
             if (IsSafe (row, col)) {
                rows[row] = col;
                if (row == n - 1) AddSolution ([.. rows]);
                else FindSolutions (row + 1);
             }
-         }
 
          // Adds a solution to the list of all solutions.
          void AddSolution (int[] solution) => allSolutions.Add (solution);
