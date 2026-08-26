@@ -10,18 +10,16 @@ using static System.Console;
 
 class Program {
    static void Main () {
-      const int PANGRAMBONUS = 7;
-      const int MINLENGTH = 4;
+      const int PANGRAMBONUS = 7, MINLENGTH = 4;
       char[] letters = ['U', 'X', 'A', 'L', 'T', 'N', 'E'];
       Dictionary<string, (int Score, bool IsPangram)> result = [];
-      foreach (string word in File.ReadLines ("words.txt")) {
-         string wordUpper = word.ToUpper ();
-         if (IsValid (wordUpper)) result[wordUpper] = (GetScoreandPangramStatus (wordUpper));
-      }
-      foreach (var ans in result.OrderByDescending (x => x.Value).ThenBy (x => x.Key)) {
-         if (ans.Value.IsPangram) ForegroundColor = ConsoleColor.Green;
+      foreach (string word in File.ReadLines ("words.txt"))
+         if (IsValid (word)) result[word] = GetScoreandPangramStatus (word);
+      foreach (var ans in result.OrderByDescending (x => x.Value.Score).ThenBy (x => x.Key)) {
+         var (Score, IsPangram) = ans.Value;
+         if (IsPangram) ForegroundColor = ConsoleColor.Green;
          else ResetColor ();
-         WriteLine ($"{ans.Value.Score, 3}: {ans.Key}");
+         WriteLine ($"{Score, 3}: {ans.Key}");
       }
       WriteLine ("----");
       WriteLine ($"{result.Sum (x => x.Value.Score), 3}: Total");
@@ -30,11 +28,11 @@ class Program {
       bool IsValid (string word)
          => word.Length >= MINLENGTH && word.Contains (letters[0]) && word.All (letters.Contains);
 
-      // Calculates the score of the word
+      // Calculates the score of the word and determines whether it is a pangram.
       (int, bool) GetScoreandPangramStatus (string word) {
          bool isPangram = letters.All (word.Contains);
-         int score = word.Length == MINLENGTH ? 1 : isPangram ? word.Length + PANGRAMBONUS
-                                                              : word.Length;
+         int length = word.Length;
+         int score = length == MINLENGTH ? 1 : isPangram ? length + PANGRAMBONUS : length;
          return (score, isPangram);
       }
    }
