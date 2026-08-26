@@ -14,8 +14,10 @@ class Program {
       const int MINLENGTH = 4;
       char[] letters = ['U', 'X', 'A', 'L', 'T', 'N', 'E'];
       Dictionary<string, (int Score, bool IsPangram)> result = [];
-      foreach (string word in File.ReadLines ("words.txt"))
-         if (IsValid (word)) result[word] = (GetScoreandPangramStatus (word));
+      foreach (string word in File.ReadLines ("words.txt")) {
+         string wordUpper = word.ToUpper ();
+         if (IsValid (wordUpper)) result[wordUpper] = (GetScoreandPangramStatus (wordUpper));
+      }
       foreach (var ans in result.OrderByDescending (x => x.Value).ThenBy (x => x.Key)) {
          if (ans.Value.IsPangram) ForegroundColor = ConsoleColor.Green;
          else ResetColor ();
