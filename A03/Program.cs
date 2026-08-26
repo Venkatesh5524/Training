@@ -10,30 +10,30 @@ using static System.Console;
 
 class Program {
    static void Main () {
+      const int PANGRAMBONUS = 7;
+      const int MINLENGTH = 4;
       char[] letters = ['U', 'X', 'A', 'L', 'T', 'N', 'E'];
-      Dictionary<string, int> result = [];
-      foreach (string word in File.ReadAllLines ("words.txt"))
-         if (IsValid (word) == true)
-            result[word] = GetScore (word);
-      int total = 0;
+      Dictionary<string, (int Score, bool IsPangram)> result = [];
+      foreach (string word in File.ReadLines ("words.txt"))
+         if (IsValid (word)) result[word] = (GetScoreandPangramStatus (word));
       foreach (var ans in result.OrderByDescending (x => x.Value).ThenBy (x => x.Key)) {
-         if (IsPanagram (ans.Key) == true) ForegroundColor = ConsoleColor.Green;
+         if (ans.Value.IsPangram) ForegroundColor = ConsoleColor.Green;
          else ResetColor ();
-         total += ans.Value;
-         WriteLine ($"{ans.Value, 3}: {ans.Key}");
+         WriteLine ($"{ans.Value.Score, 3}: {ans.Key}");
       }
       WriteLine ("----");
-      WriteLine ($"{total, 3}: Total");
+      WriteLine ($"{result.Sum (x => x.Value.Score), 3}: Total");
 
       // Checks validity of the word
       bool IsValid (string word)
-         => word.Length > 3 && word.Contains (letters[0]) && word.All (letters.Contains);
+         => word.Length >= MINLENGTH && word.Contains (letters[0]) && word.All (letters.Contains);
 
       // Calculates the score of the word
-      int GetScore (string word)
-         => word.Length == 4 ? 1 : IsPanagram (word) ? word.Length + 7 : word.Length;
-
-      // Checks if the word is a panagram
-      bool IsPanagram (string word) => letters.All (word.Contains);
+      (int, bool) GetScoreandPangramStatus (string word) {
+         bool isPangram = letters.All (word.Contains);
+         int score = word.Length == MINLENGTH ? 1 : isPangram ? word.Length + PANGRAMBONUS
+                                                              : word.Length;
+         return (score, isPangram);
+      }
    }
 }
