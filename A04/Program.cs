@@ -1,9 +1,11 @@
 ﻿// ------------------------------------------------------------------------------------------------
 // Training ~ A training program for new joinees at Metamation, Batch- July 2026.
 // Copyright (c) Metamation India.
-// -------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program.cs
-// Program to find the occurence of all letters in word.txt and display the top 7 letters with their occurences.
+// Program to find the occurence of all letters in word.txt and display the top 7 letters with
+// their occurences.
+// ------------------------------------------------------------------------------------------------
 
 using static System.Console;
 class Program {
