@@ -14,7 +14,7 @@ class Program {
       foreach (string word in File.ReadLines ("words.txt"))
          foreach (char c in word.ToUpper())
             freq[c] = (freq.TryGetValue (c, out int value)) ? ++value : 1;
-      WriteLine ("Letter: Occurences");
+      WriteLine ("Seven most frequently occuring letters and their occurences");
       foreach (var ch in freq.OrderByDescending (a => a.Value).Take (7))
          WriteLine ($"{ch.Key, 3} {":", 3} {ch.Value}");
    }
