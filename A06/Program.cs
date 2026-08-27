@@ -7,6 +7,7 @@
 // ------------------------------------------------------------------------------------------------
 
 using System.Text;
+
 using static System.Console;
 
 #region Program -----------------------------------------------------
@@ -15,31 +16,26 @@ class Program {
    static void Main () {
       Write ("Enter number of queens: ");
       int n = GetBoardSize ();
-      List<int[]> allSolutions = [];
-      List<int[]> uniqueSolutions = [];
+      List<int[]> solutions = [];
       int[] rows = new int[n];
+      Write ("Press (P) to see all possible solutions or (U) to see only unique solutions: ");
+      ConsoleKey response;
+      while ((response = ReadKey (true).Key) is not ConsoleKey.P and not ConsoleKey.U) { }
+      WriteLine (response);
+      bool showUniqueSolution = response == ConsoleKey.U;
       Write ("Processing...  ");
       FindSolutions (0);
-      SetCursorPosition (0, 1);
-      if (allSolutions.Count == 0) {
+      Clear ();
+      if (solutions.Count == 0) {
          WriteLine ($"No solution exists for {n} Queens.");
          Write ("Press any key to exit... ");
          ReadKey (true);
          return;
       }
-      Write ("Press (P) to see all possible solutions or (U) to see only unique solutions: ");
-      ConsoleKey response;
-      while ((response = ReadKey (true).Key) is not ConsoleKey.P and not ConsoleKey.U) { }
-      WriteLine (response);
-      if (response == ConsoleKey.P) {
-         WriteLine ($"Total possible solutions for {n} queens: {allSolutions.Count}");
-         DisplaySolution (allSolutions);
-      } else {
-         foreach (int[] solution in allSolutions)
-            if (IsUnique (solution)) uniqueSolutions.Add (solution);
-         WriteLine ($"Total unique solutions for {n} queens: {uniqueSolutions.Count}");
-         DisplaySolution (uniqueSolutions);
-      }
+      WriteLine ($"Total {(showUniqueSolution ? "Unique" : "Possible")} solutions for {n} Queens: {solutions.Count}");
+      Write ("Press any key to print the solution");
+      ReadKey ();
+      DisplaySolution ();
 
       // Finds all possible N-Queens solutions
       void FindSolutions (int row) {
@@ -50,8 +46,12 @@ class Program {
                else FindSolutions (row + 1);
             }
 
-         // Adds a solution to the list of all solutions.
-         void AddSolution (int[] solution) => allSolutions.Add (solution);
+         // Adds the solution directly or only if it is unique, based on the selected mode.
+         void AddSolution (int[] solution) {
+            if (showUniqueSolution) {
+               if (IsUnique (solution)) solutions.Add (solution);
+            } else solutions.Add (solution);
+         }
 
          // Checks whether a queen can be safely placed at the given position.
          bool IsSafe (int row, int col) {
@@ -63,11 +63,11 @@ class Program {
          }
       }
 
-      // Checks whether the solution is unique among rotations and reflections.
+      // Checks whether an equivalent solution exists through rotations or reflections.
       bool IsUnique (int[] solution) {
-         for (int i = 0; i < 4; i++) {
-            if (SolutionExists (solution) || SolutionExists (Mirror (solution))) return false;
+         for (int i = 0; i < ROTATIONS; i++) {
             solution = Rotate (solution);
+            if (SolutionExists (solution) || SolutionExists (Mirror (solution))) return false;
          }
          return true;
       }
@@ -84,10 +84,10 @@ class Program {
 
       // Checks whether the given solution already exists.
       bool SolutionExists (int[] solution)
-         => uniqueSolutions.Any (x => x.SequenceEqual (solution));
+         => solutions.Any (x => x.SequenceEqual (solution));
 
       // Displays the solutions and allows navigation between them.
-      void DisplaySolution (List<int[]> solutions) {
+      void DisplaySolution () {
          int currSoln = 0;
          Clear ();
          while (currSoln < solutions.Count) {
@@ -98,10 +98,10 @@ class Program {
                "\nPress \u2190 to see the previous solution... \nPress esc to exit... ");
             ConsoleKey key;
             while ((key = ReadKey (true).Key) is not (ConsoleKey.RightArrow or ConsoleKey.LeftArrow
-                                                                            or ConsoleKey.Escape)) ;
+                                                                            or ConsoleKey.Escape));
             if (key == ConsoleKey.Escape) break;
-            else if ((key == ConsoleKey.RightArrow) && currSoln < solutions.Count - 1) currSoln++;
-            else if ((key == ConsoleKey.LeftArrow) && currSoln > 0) currSoln--;
+            if ((key == ConsoleKey.RightArrow) && currSoln < solutions.Count - 1) currSoln++;
+            if ((key == ConsoleKey.LeftArrow) && currSoln > 0) currSoln--;
             Clear ();
          }
       }
@@ -109,18 +109,18 @@ class Program {
       // Displays the board for the given solution.
       void DisplayBoard (int[] solution) {
          OutputEncoding = new UnicodeEncoding ();
-         int num = solution.Length;
-         WriteLine (TOPLEFT + string.Join ("", Enumerable.Repeat (TOPEDGE, num - 1)) + TOPRIGHT);
-         for (int i = 0; i < num; i++) {
-            WriteLine (VERT + string.Join ("", Enumerable.Range (1, num)
-                                                         .Select (j => solution[i] == j - 1 ? QUEEN
-                                                                                        : EMPTY)));
-            if (i < num - 1)
-               WriteLine (MIDLEFT + string.Join ("", Enumerable.Repeat (MIDEDGE, num - 1))
-                          + MIDRIGHT);
+         WriteLine (TOP[0] + string.Join (TOP[1], Enumerable.Repeat (HORIZONTAL, n)) + TOP[2]);
+         for (int i = 0; i < n; i++) {
+            int placedQueen = solution[i];
+            WriteLine (VERTICAL + string.Join (VERTICAL, Enumerable.Range (1, n)
+                                        .Select (j => placedQueen == j - 1 ? QUEEN
+                                                                           : EMPTY)) + VERTICAL);
+            if (i < n - 1)
+               WriteLine (MID[0] + string.Join (MID[1], Enumerable.Repeat (HORIZONTAL, n))
+                          + MID[2]);
          }
-         WriteLine (BOTTOMLEFT + string.Join ("", Enumerable.Repeat (BOTTOMEDGE, num - 1))
-                    + BOTTOMRIGHT);
+         WriteLine (BOTTOM[0] + string.Join (BOTTOM[1], Enumerable.Repeat (HORIZONTAL, n))
+                    + BOTTOM[2]);
       }
 
       // Reads and validates the number of queens entered by the user.
@@ -135,9 +135,14 @@ class Program {
    #endregion
 
    #region const ---------------------------------------------------
-   const string TOPLEFT = "┌", TOPEDGE = "────┬", TOPRIGHT = "────┐", MIDLEFT = "├",
-                MIDEDGE = "────┼", MIDRIGHT = "────┤", BOTTOMLEFT = "└", BOTTOMEDGE = "────┴",
-                BOTTOMRIGHT = "────┘", VERT = "│", EMPTY = "    │", QUEEN = " ♕  │";
+   const string TOP = "┌┬┐";
+   const string MID = "├┼┤";
+   const string BOTTOM = "└┴┘";
+   const string VERTICAL = "│";
+   const string HORIZONTAL = "────";
+   const string EMPTY = "    ";
+   const string QUEEN = " ♕  ";
+   const int ROTATIONS = 4;
    #endregion
 }
 #endregion
