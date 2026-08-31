@@ -14,9 +14,10 @@ using static System.Console;
 class Program {
    #region Methods --------------------------------------------------
    static void Main () {
-      Write ("Enter number of queens: ");
+      Write ("Enter number of queens (1 - 15): ");
       int n = GetBoardSize ();
       List<int[]> solutions = [];
+      HashSet<string> symmetries = [];
       int[] rows = new int[n];
       Write ("Press (P) to see all possible solutions or (U) to see only unique solutions: ");
       ConsoleKey response;
@@ -32,7 +33,8 @@ class Program {
          ReadKey (true);
          return;
       }
-      WriteLine ($"Total {(showUniqueSolution ? "Unique" : "Possible")} solutions for {n} Queens: {solutions.Count}");
+      WriteLine ($"Total {(showUniqueSolution ? "Unique" : "Possible")} solutions for {n} " +
+                 $"Queens: {solutions.Count}");
       Write ("Press any key to print the solution");
       ReadKey ();
       DisplaySolution ();
@@ -46,13 +48,6 @@ class Program {
                else FindSolutions (row + 1);
             }
 
-         // Adds the solution directly or only if it is unique, based on the selected mode.
-         void AddSolution (int[] solution) {
-            if (showUniqueSolution) {
-               if (IsUnique (solution)) solutions.Add (solution);
-            } else solutions.Add (solution);
-         }
-
          // Checks whether a queen can be safely placed at the given position.
          bool IsSafe (int row, int col) {
             for (int i = 0; i < row; i++) {
@@ -61,82 +56,91 @@ class Program {
             }
             return true;
          }
-      }
 
-      // Checks whether an equivalent solution exists through rotations or reflections.
-      bool IsUnique (int[] solution) {
-         for (int i = 0; i < ROTATIONS; i++) {
-            solution = Rotate (solution);
-            if (SolutionExists (solution) || SolutionExists (Mirror (solution))) return false;
+         // Adds the solution directly or only if it is unique, based on the selected mode.
+         void AddSolution (int[] solution) {
+            if (!showUniqueSolution || IsUnique(solution)) {
+               solutions.Add (solution);
+               if (showUniqueSolution) AddSymmetries (solution);
+            }
          }
-         return true;
+
+         // Checks whether the given configuration is not already present in the set of symmetries.
+         bool IsUnique (int[] solution) => !symmetries.Contains (ConvertToString(solution));
+
+         // Adds all rotated and mirrored configurations of the given solution to the set.
+         void AddSymmetries (int[] solution) {
+            for (int i = 0; i < ROTATIONS; i++) {
+               solution = Rotate (solution);
+               symmetries.Add (ConvertToString(solution));
+               symmetries.Add (ConvertToString(Mirror (solution)));
+            }
+         }
+
+         // Rotates the solution by 90 degrees.
+         int[] Rotate (int[] solution) {
+            int[] rotated = new int[n];
+            for (int row = 0; row < n; row++) rotated[solution[row]] = n - 1 - row;
+            return rotated;
+         }
+
+         // Creates a mirrored version of the given solution.
+         int[] Mirror (int[] solution) => [.. solution.Reverse ()];
+
+         // Converts the given array into string.
+         string ConvertToString (int[] arr) => string.Join(",", arr);
       }
-
-      // Rotates the solution by 90 degrees.
-      int[] Rotate (int[] solution) {
-         int[] rotated = new int[n];
-         for (int row = 0; row < n; row++) rotated[solution[row]] = n - 1 - row;
-         return rotated;
-      }
-
-      // Creates a mirrored version of the given solution.
-      int[] Mirror (int[] solution) => [.. solution.Reverse ()];
-
-      // Checks whether the given solution already exists.
-      bool SolutionExists (int[] solution)
-         => solutions.Any (x => x.SequenceEqual (solution));
 
       // Displays the solutions and allows navigation between them.
       void DisplaySolution () {
+         OutputEncoding = new UnicodeEncoding ();
          int currSoln = 0;
          Clear ();
          while (currSoln < solutions.Count) {
-            SetCursorPosition (0, 0);
+            Clear ();
             WriteLine ($"\nSolution {currSoln + 1} of {solutions.Count} ");
             DisplayBoard (solutions[currSoln]);
             Write ("\nPress \u2192 to see the next solution... " +
                "\nPress \u2190 to see the previous solution... \nPress esc to exit... ");
             ConsoleKey key;
             while ((key = ReadKey (true).Key) is not (ConsoleKey.RightArrow or ConsoleKey.LeftArrow
-                                                                            or ConsoleKey.Escape));
+                                                                            or ConsoleKey.Escape)) ;
             if (key == ConsoleKey.Escape) break;
             if ((key == ConsoleKey.RightArrow) && currSoln < solutions.Count - 1) currSoln++;
             if ((key == ConsoleKey.LeftArrow) && currSoln > 0) currSoln--;
-            Clear ();
          }
       }
 
       // Displays the board for the given solution.
       void DisplayBoard (int[] solution) {
-         OutputEncoding = new UnicodeEncoding ();
-         WriteLine (TOP[0] + string.Join (TOP[1], Enumerable.Repeat (HORIZONTAL, n)) + TOP[2]);
+         WriteLine (Border (TOP));
          for (int i = 0; i < n; i++) {
             int placedQueen = solution[i];
             WriteLine (VERTICAL + string.Join (VERTICAL, Enumerable.Range (1, n)
                                         .Select (j => placedQueen == j - 1 ? QUEEN
                                                                            : EMPTY)) + VERTICAL);
-            if (i < n - 1)
-               WriteLine (MID[0] + string.Join (MID[1], Enumerable.Repeat (HORIZONTAL, n))
-                          + MID[2]);
+            if (i < n - 1) WriteLine (Border (MIDDLE));
          }
-         WriteLine (BOTTOM[0] + string.Join (BOTTOM[1], Enumerable.Repeat (HORIZONTAL, n))
-                    + BOTTOM[2]);
+         WriteLine (Border (BOTTOM));
+
+         // Builds a horizontal border line from the given corner and joint characters.
+         string Border (string pattern)
+            => pattern[0] + string.Join (pattern[1], Enumerable.Repeat (HORIZONTAL, n)) + pattern[2];
       }
 
       // Reads and validates the number of queens entered by the user.
       int GetBoardSize () {
          for (; ; ) {
-            if (int.TryParse (ReadLine (), out int n) && n > 0) return n;
-            Write ("Enter a positive number: ");
+            if (int.TryParse (ReadLine (), out int n) && n > 0 && n <= 15) return n;
+            Write ("Enter a valid number in range of 1 to 15: ");
          }
-
       }
    }
    #endregion
 
-   #region const ---------------------------------------------------
+   #region const ----------------------------------------------------
    const string TOP = "┌┬┐";
-   const string MID = "├┼┤";
+   const string MIDDLE = "├┼┤";
    const string BOTTOM = "└┴┘";
    const string VERTICAL = "│";
    const string HORIZONTAL = "────";
