@@ -14,26 +14,24 @@ using static System.Console;
 class Program {
    #region Methods --------------------------------------------------
    static void Main () {
-      Write ("Enter number of queens (1 - 15): ");
-      int n = GetBoardSize ();
       List<int[]> solutions = [];
       HashSet<string> symmetries = [];
-      int[] rows = new int[n];
-      Write ("Press (P) to see all possible solutions or (U) to see only unique solutions: ");
+      int[] rows = new int[N];
+      Write ("Would you like to see (A)ll solutions or (U)nique solutions only? ");
       ConsoleKey response;
-      while ((response = ReadKey (true).Key) is not ConsoleKey.P and not ConsoleKey.U) { }
+      while ((response = ReadKey (true).Key) is not ConsoleKey.A and not ConsoleKey.U) { }
       WriteLine (response);
       bool showUniqueSolution = response == ConsoleKey.U;
       Write ("Processing...  ");
       FindSolutions (0);
       Clear ();
       if (solutions.Count == 0) {
-         WriteLine ($"No solution exists for {n} Queens.");
+         WriteLine ($"No solution exists for {N} Queens.");
          Write ("Press any key to exit... ");
          ReadKey (true);
          return;
       }
-      WriteLine ($"Total {(showUniqueSolution ? "Unique" : "Possible")} solutions for {n} " +
+      WriteLine ($"Total {(showUniqueSolution ? "Unique" : "Possible")} solutions for {N} " +
                  $"Queens: {solutions.Count}");
       Write ("Press any key to print the solution");
       ReadKey ();
@@ -41,10 +39,10 @@ class Program {
 
       // Finds all possible N-Queens solutions
       void FindSolutions (int row) {
-         for (int col = 0; col < n; col++)
+         for (int col = 0; col < N; col++)
             if (IsSafe (row, col)) {
                rows[row] = col;
-               if (row == n - 1) AddSolution ([.. rows]);
+               if (row == N - 1) AddSolution ([.. rows]);
                else FindSolutions (row + 1);
             }
 
@@ -79,8 +77,8 @@ class Program {
 
          // Rotates the solution by 90 degrees.
          int[] Rotate (int[] solution) {
-            int[] rotated = new int[n];
-            for (int row = 0; row < n; row++) rotated[solution[row]] = n - 1 - row;
+            int[] rotated = new int[N];
+            for (int row = 0; row < N; row++) rotated[solution[row]] = N - 1 - row;
             return rotated;
          }
 
@@ -114,26 +112,18 @@ class Program {
       // Displays the board for the given solution.
       void DisplayBoard (int[] solution) {
          WriteLine (Border (TOP));
-         for (int i = 0; i < n; i++) {
+         for (int i = 0; i < N; i++) {
             int placedQueen = solution[i];
-            WriteLine (VERTICAL + string.Join (VERTICAL, Enumerable.Range (1, n)
+            WriteLine (VERTICAL + string.Join (VERTICAL, Enumerable.Range (1, N)
                                         .Select (j => placedQueen == j - 1 ? QUEEN
                                                                            : EMPTY)) + VERTICAL);
-            if (i < n - 1) WriteLine (Border (MIDDLE));
+            if (i < N - 1) WriteLine (Border (MIDDLE));
          }
          WriteLine (Border (BOTTOM));
 
          // Builds a horizontal border line from the given corner and joint characters.
          string Border (string pattern)
-            => pattern[0] + string.Join (pattern[1], Enumerable.Repeat (HORIZONTAL, n)) + pattern[2];
-      }
-
-      // Reads and validates the number of queens entered by the user.
-      int GetBoardSize () {
-         for (; ; ) {
-            if (int.TryParse (ReadLine (), out int n) && n > 0 && n <= 15) return n;
-            Write ("Enter a valid number in range of 1 to 15: ");
-         }
+            => pattern[0] + string.Join (pattern[1], Enumerable.Repeat (HORIZONTAL, N)) + pattern[2];
       }
    }
    #endregion
@@ -147,6 +137,7 @@ class Program {
    const string EMPTY = "    ";
    const string QUEEN = " ♕  ";
    const int ROTATIONS = 4;
+   const int N = 8;                          // Number of Queens
    #endregion
 }
 #endregion
