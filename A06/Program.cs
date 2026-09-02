@@ -15,22 +15,14 @@ class Program {
    #region Methods --------------------------------------------------
    static void Main () {
       List<int[]> solutions = [];
-      HashSet<string> symmetries = [];
       int[] rows = new int[N];
-      Write ("Would you like to see (A)ll solutions or (U)nique solutions only? ");
-      ConsoleKey response;
-      while ((response = ReadKey (true).Key) is not ConsoleKey.A and not ConsoleKey.U) { }
+      Write ("Would you like to see (A)ll solutions? Press any other key for unique solutions:");
+      ConsoleKey response = ReadKey (true).Key;
       WriteLine (response);
-      bool showUniqueSolution = response == ConsoleKey.U;
+      bool showUniqueSolution = response != ConsoleKey.A;
       Write ("Processing...  ");
       FindSolutions (0);
       Clear ();
-      if (solutions.Count == 0) {
-         WriteLine ($"No solution exists for {N} Queens.");
-         Write ("Press any key to exit... ");
-         ReadKey (true);
-         return;
-      }
       WriteLine ($"Total {(showUniqueSolution ? "Unique" : "Possible")} solutions for {N} " +
                  $"Queens: {solutions.Count}");
       Write ("Press any key to print the solution");
@@ -57,23 +49,21 @@ class Program {
 
          // Adds the solution directly or only if it is unique, based on the selected mode.
          void AddSolution (int[] solution) {
-            if (!showUniqueSolution || IsUnique(solution)) {
-               solutions.Add (solution);
-               if (showUniqueSolution) AddSymmetries (solution);
-            }
+            if (!showUniqueSolution || IsUnique (solution)) solutions.Add (solution);
          }
 
-         // Checks whether the given configuration is not already present in the set of symmetries.
-         bool IsUnique (int[] solution) => !symmetries.Contains (ConvertToString(solution));
-
-         // Adds all rotated and mirrored configurations of the given solution to the set.
-         void AddSymmetries (int[] solution) {
+         // Checks whether an equivalent solution exists through rotations or reflections.
+         bool IsUnique (int[] solution) {
             for (int i = 0; i < ROTATIONS; i++) {
                solution = Rotate (solution);
-               symmetries.Add (ConvertToString(solution));
-               symmetries.Add (ConvertToString(Mirror (solution)));
+               if (SolutionExists (solution) || SolutionExists (Mirror (solution))) return false;
             }
+            return true;
          }
+
+         // Checks whether the given solution already exists.
+         bool SolutionExists (int[] solution) => solutions.Any (x => x.SequenceEqual (solution));
+
 
          // Rotates the solution by 90 degrees.
          int[] Rotate (int[] solution) {
@@ -84,9 +74,6 @@ class Program {
 
          // Creates a mirrored version of the given solution.
          int[] Mirror (int[] solution) => [.. solution.Reverse ()];
-
-         // Converts the given array into string.
-         string ConvertToString (int[] arr) => string.Join(",", arr);
       }
 
       // Displays the solutions and allows navigation between them.
@@ -99,13 +86,11 @@ class Program {
             WriteLine ($"\nSolution {currSoln + 1} of {solutions.Count} ");
             DisplayBoard (solutions[currSoln]);
             Write ("\nPress \u2192 to see the next solution... " +
-               "\nPress \u2190 to see the previous solution... \nPress esc to exit... ");
-            ConsoleKey key;
-            while ((key = ReadKey (true).Key) is not (ConsoleKey.RightArrow or ConsoleKey.LeftArrow
-                                                                            or ConsoleKey.Escape)) ;
-            if (key == ConsoleKey.Escape) break;
+               "\nPress \u2190 to see the previous solution... \nPress any key to exit... ");
+            ConsoleKey key = ReadKey (true).Key;
             if ((key == ConsoleKey.RightArrow) && currSoln < solutions.Count - 1) currSoln++;
-            if ((key == ConsoleKey.LeftArrow) && currSoln > 0) currSoln--;
+            else if ((key == ConsoleKey.LeftArrow) && currSoln > 0) currSoln--;
+            else break;
          }
       }
 
@@ -114,9 +99,13 @@ class Program {
          WriteLine (Border (TOP));
          for (int i = 0; i < N; i++) {
             int placedQueen = solution[i];
-            WriteLine (VERTICAL + string.Join (VERTICAL, Enumerable.Range (1, N)
-                                        .Select (j => placedQueen == j - 1 ? QUEEN
-                                                                           : EMPTY)) + VERTICAL);
+            Write (VERTICAL);
+            for (int j = 0; j < N; j++) {
+               if (placedQueen == j) Write (QUEEN);
+               else Write (EMPTY);
+               Write (VERTICAL);
+            }
+            WriteLine ();
             if (i < N - 1) WriteLine (Border (MIDDLE));
          }
          WriteLine (Border (BOTTOM));
@@ -137,7 +126,7 @@ class Program {
    const string EMPTY = "    ";
    const string QUEEN = " ♕  ";
    const int ROTATIONS = 4;
-   const int N = 8;                          // Number of Queens
+   const int N = 8;                   // Number of Queens
    #endregion
 }
 #endregion
