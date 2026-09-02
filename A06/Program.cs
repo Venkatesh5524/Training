@@ -17,8 +17,7 @@ class Program {
       List<int[]> solutions = [];
       int[] rows = new int[N];
       Write ("Would you like to see (A)ll solutions? Press any other key for unique solutions:");
-      ConsoleKey response = ReadKey (true).Key;
-      WriteLine (response);
+      ConsoleKey response = ReadKey ().Key;
       bool showUniqueSolution = response != ConsoleKey.A;
       Write ("Processing...  ");
       FindSolutions (0);
