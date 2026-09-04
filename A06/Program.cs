@@ -6,8 +6,6 @@
 // A06: Program to solve the N-Queens problem and display all possible and unique solutions.
 // ------------------------------------------------------------------------------------------------
 
-using System.Text;
-
 using static System.Console;
 
 #region Program -----------------------------------------------------
@@ -22,8 +20,6 @@ class Program {
       Write ("Processing...");
       FindSolutions (0);
       Clear ();
-      Write ($"{solutions.Count} {(showUniqueSolution ? "unique " : "")}solutions found.");
-      ReadKey ();
       DisplaySolution ();
 
       // Finds all possible N-Queens solutions
@@ -74,19 +70,20 @@ class Program {
 
       // Displays the solutions and allows navigation between them.
       void DisplaySolution () {
-         OutputEncoding = new UnicodeEncoding ();
-         int currSoln = 0;
+         OutputEncoding = new System.Text.UnicodeEncoding ();
+         int currSoln = 0, totalSolns = solutions.Count;
          Clear ();
-         while (currSoln < solutions.Count) {
+         while (currSoln < totalSolns) {
             Clear ();
-            WriteLine ($"\nSolution {currSoln + 1} of {solutions.Count} ");
+            WriteLine ($"\nSolution {currSoln + 1} of {totalSolns} ");
             DisplayBoard (solutions[currSoln]);
             Write ("\nPress \u2192 to see the next solution... " +
                "\nPress \u2190 to see the previous solution... \nPress any key to exit... ");
-            ConsoleKey key = ReadKey (true).Key;
-            if ((key == ConsoleKey.RightArrow) && currSoln < solutions.Count - 1) currSoln++;
-            else if ((key == ConsoleKey.LeftArrow) && currSoln > 0) currSoln--;
-            else break;
+            switch (ReadKey (true).Key) {
+               case ConsoleKey.RightArrow: currSoln = Math.Min (currSoln + 1, totalSolns - 1); break;
+               case ConsoleKey.LeftArrow: currSoln = Math.Max (currSoln - 1, 0); break;
+               default: return;
+            }
          }
       }
 
@@ -107,11 +104,10 @@ class Program {
 
          // Builds a horizontal border line from the given corner and joint characters.
          string Border (string pattern) {
-            StringBuilder border = new ();
-            border.Append (pattern[0]);
-            for (int i = 1; i < N; i++) border.Append (HORIZONTAL).Append (pattern[1]);
-            border.Append (HORIZONTAL).Append (pattern[2]);
-            return border.ToString ();
+            string border = pattern[0].ToString ();
+            for (int i = 1; i <= N; i++)
+               border += HORIZONTAL + (i == N ? pattern[2] : pattern[1]);
+            return border;
          }
       }
    }
