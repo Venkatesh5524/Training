@@ -19,11 +19,10 @@ class Program {
       Write ("Would you like to see (A)ll solutions? Press any other key for unique solutions:");
       ConsoleKey response = ReadKey ().Key;
       bool showUniqueSolution = response != ConsoleKey.A;
-      Write ("Processing...  ");
+      Write ("Processing...");
       FindSolutions (0);
       Clear ();
-      WriteLine ($"Total {(showUniqueSolution ? "Unique" : "Possible")} solutions for {N} " +
-                 $"Queens: {solutions.Count}");
+      WriteLine ($"{solutions.Count} {(showUniqueSolution ? "unique " : "")}solutions found.");
       Write ("Press any key to print the solution");
       ReadKey ();
       DisplaySolution ();
@@ -63,7 +62,6 @@ class Program {
          // Checks whether the given solution already exists.
          bool SolutionExists (int[] solution) => solutions.Any (x => x.SequenceEqual (solution));
 
-
          // Rotates the solution by 90 degrees.
          int[] Rotate (int[] solution) {
             int[] rotated = new int[N];
@@ -100,8 +98,7 @@ class Program {
             int placedQueen = solution[i];
             Write (VERTICAL);
             for (int j = 0; j < N; j++) {
-               if (placedQueen == j) Write (QUEEN);
-               else Write (EMPTY);
+               Write (placedQueen == j ? QUEEN : EMPTY);
                Write (VERTICAL);
             }
             WriteLine ();
@@ -110,8 +107,13 @@ class Program {
          WriteLine (Border (BOTTOM));
 
          // Builds a horizontal border line from the given corner and joint characters.
-         string Border (string pattern)
-            => pattern[0] + string.Join (pattern[1], Enumerable.Repeat (HORIZONTAL, N)) + pattern[2];
+         string Border (string pattern) {
+            StringBuilder border = new ();
+            border.Append (pattern[0]);
+            for (int i = 1; i < N; i++) border.Append (HORIZONTAL).Append (pattern[1]);
+            border.Append (HORIZONTAL).Append (pattern[2]);
+            return border.ToString ();
+         }
       }
    }
    #endregion
