@@ -22,8 +22,7 @@ class Program {
       Write ("Processing...");
       FindSolutions (0);
       Clear ();
-      WriteLine ($"{solutions.Count} {(showUniqueSolution ? "unique " : "")}solutions found.");
-      Write ("Press any key to print the solution");
+      Write ($"{solutions.Count} {(showUniqueSolution ? "unique " : "")}solutions found.");
       ReadKey ();
       DisplaySolution ();
 
