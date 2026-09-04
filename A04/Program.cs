@@ -16,6 +16,6 @@ class Program {
             freq[c] = (freq.TryGetValue (c, out int value)) ? ++value : 1;
       WriteLine ("Seven most frequently occuring letters and their occurences");
       foreach (var ch in freq.OrderByDescending (a => a.Value).Take (7))
-         WriteLine ($"{ch.Key,2} : {ch.Value}");
+         WriteLine ($"{ch.Key, 2} : {ch.Value}");
    }
 }
