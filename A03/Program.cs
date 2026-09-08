@@ -18,8 +18,8 @@ class Program {
       foreach (var ans in result.OrderByDescending (x => x.Value.Score).ThenBy (x => x.Key)) {
          var (Score, IsPangram) = ans.Value;
          if (IsPangram) ForegroundColor = ConsoleColor.Green;
-         else ResetColor ();
          WriteLine ($"{Score, 3}: {ans.Key}");
+         if (IsPangram) ResetColor ();
       }
       WriteLine ("----");
       WriteLine ($"{result.Sum (x => x.Value.Score), 3}: Total");
