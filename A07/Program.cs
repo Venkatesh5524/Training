@@ -24,8 +24,8 @@ class Program {
       }
    }
 
-
    #region Implementation -------------------------------------------
+   // Parses the input string and returns a double value.
    static double DoubleParse (string input) {
       double result = 0;
       int index = 0, sign = 1, digitCount = 0, len = input.Length;
