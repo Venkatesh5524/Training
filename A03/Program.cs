@@ -17,9 +17,11 @@ class Program {
          if (IsValid (word)) result[word] = GetScoreandPangramStatus (word);
       foreach (var ans in result.OrderByDescending (x => x.Value.Score).ThenBy (x => x.Key)) {
          var (Score, IsPangram) = ans.Value;
+         ConsoleColor previousColor = ForegroundColor;
          if (IsPangram) ForegroundColor = ConsoleColor.Green;
          WriteLine ($"{Score, 3}: {ans.Key}");
-         if (IsPangram) ResetColor ();
+         // Restores the previous color to preserve the console's original appearance.
+         ForegroundColor = previousColor;
       }
       WriteLine ("----");
       WriteLine ($"{result.Sum (x => x.Value.Score), 3}: Total");
