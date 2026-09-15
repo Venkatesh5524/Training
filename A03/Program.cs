@@ -15,16 +15,16 @@ class Program {
       Dictionary<string, (int Score, bool IsPangram)> result = [];
       foreach (string word in File.ReadLines ("words.txt"))
          if (IsValid (word)) result[word] = GetScoreandPangramStatus (word);
+      ConsoleColor previousColor = ForegroundColor;
       foreach (var ans in result.OrderByDescending (x => x.Value.Score).ThenBy (x => x.Key)) {
          var (Score, IsPangram) = ans.Value;
-         ConsoleColor previousColor = ForegroundColor;
          if (IsPangram) ForegroundColor = ConsoleColor.Green;
-         WriteLine ($"{Score, 3}: {ans.Key}");
+         WriteLine ($"{Score, 3} {ans.Key}");
          // Restores the foreground color only if it was changed.
          if (ForegroundColor != previousColor) ForegroundColor = previousColor;
       }
       WriteLine ("----");
-      WriteLine ($"{result.Sum (x => x.Value.Score), 3}: Total");
+      WriteLine ($"{result.Sum (x => x.Value.Score), 3} Total");
 
       // Checks validity of the word
       bool IsValid (string word)
@@ -34,7 +34,7 @@ class Program {
       (int, bool) GetScoreandPangramStatus (string word) {
          bool isPangram = letters.All (word.Contains);
          int length = word.Length;
-         int score = length == MINLENGTH ? 1 : isPangram ? length + PANGRAMBONUS : length;
+         int score = length == MINLENGTH ? 1 : (isPangram ? length + PANGRAMBONUS : length);
          return (score, isPangram);
       }
    }
