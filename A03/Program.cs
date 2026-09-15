@@ -20,8 +20,8 @@ class Program {
          ConsoleColor previousColor = ForegroundColor;
          if (IsPangram) ForegroundColor = ConsoleColor.Green;
          WriteLine ($"{Score, 3}: {ans.Key}");
-         // Restores the previous color to preserve the console's original appearance.
-         ForegroundColor = previousColor;
+         // Restores the foreground color only if it was changed.
+         if (ForegroundColor != previousColor) ForegroundColor = previousColor;
       }
       WriteLine ("----");
       WriteLine ($"{result.Sum (x => x.Value.Score), 3}: Total");
