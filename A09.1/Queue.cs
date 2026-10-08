@@ -7,7 +7,7 @@
 // ------------------------------------------------------------------------------------------------
 
 #region Queue -------------------------------------------------------------------------------------
-/// <summary>Implemention of custom queue that adds and removes elements in FIFO order</summary>
+/// <summary>Implementation of custom queue that adds and removes elements in FIFO order</summary>
 class TQueue<T> {
    #region Property -------------------------------------------------
    /// <summary>Checks whether the queue contains no elements</summary>
