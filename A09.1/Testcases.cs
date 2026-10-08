@@ -23,8 +23,8 @@ class TestCases {
 
    #region Implementations ------------------------------------------
    // Displays the test result with a corresponding status message
-   static void DisplayStatus (string message, bool status) {
-      if (status) {
+   static void DisplayStatus (string message, bool iStatus) {
+      if (iStatus) {
          Console.ForegroundColor = ConsoleColor.Green;
          Console.Write ("[Pass] ");
       } else {
@@ -38,39 +38,39 @@ class TestCases {
    // Dequeue from an empty queue
    static void Test1 () {
       TQueue<int> queue = new ();
-      bool isPassed = false;
+      bool iPassed = false;
       try {
          queue.Dequeue ();
       } catch (InvalidOperationException) {
-         isPassed = true;
+         iPassed = true;
       }
-      DisplayStatus ("Dequeue from an empty queue", isPassed);
+      DisplayStatus ("Dequeue from an empty queue", iPassed);
    }
 
    // Verify single-element queue and empty state
    static void Test2 () {
       TQueue<string> queue = new ();
       queue.Enqueue ("A");
-      bool isPassed = queue.Dequeue () == "A" && queue.IsEmpty;
-      DisplayStatus ("Single-element queue and empty state", isPassed);
+      bool iPassed = queue.Dequeue () == "A" && queue.IsEmpty;
+      DisplayStatus ("Single-element queue and empty state", iPassed);
    }
 
    // Verify First In First Out (FIFO) order
    static void Test3 () {
       TQueue<char> queue = new ();
-      bool isPassed = true;
+      bool iPassed = true;
       queue.Enqueue ('A');
       queue.Enqueue ('B');
       queue.Enqueue ('C');
       for (int i = 0; !queue.IsEmpty; i++)
-         if (queue.Dequeue () != (char)('A' + i)) isPassed = false;
-      DisplayStatus ("FIFO order", isPassed);
+         if (queue.Dequeue () != (char)('A' + i)) iPassed = false;
+      DisplayStatus ("FIFO order", iPassed);
    }
 
    // Check if the queue reuses the empty space at the beginning (Circular Wrap around)
    static void Test4 () {
       TQueue<char> queue = new ();
-      bool isPassed = true;
+      bool iPassed = true;
       queue.Enqueue ('A');
       queue.Enqueue ('B');
       queue.Enqueue ('C');
@@ -79,24 +79,24 @@ class TestCases {
       queue.Enqueue ('D');
       queue.Enqueue ('E');
       for (int i = 0; !queue.IsEmpty; i++)
-         if (queue.Dequeue () != (char)('C' + i)) isPassed = false;
-      DisplayStatus ("Reuses the empty space at the beginning", isPassed);
+         if (queue.Dequeue () != (char)('C' + i)) iPassed = false;
+      DisplayStatus ("Reuses the empty space at the beginning", iPassed);
    }
 
    // Verify resize when completely full
    static void Test5 () {
       TQueue<char> queue = new ();
-      bool isPassed = true;
+      bool iPassed = true;
       for (int i = 0; i < 5; i++) queue.Enqueue ((char)('A' + i));
       for (int j = 0; !queue.IsEmpty; j++)
-         if (queue.Dequeue () != (char)('A' + j)) isPassed = false;
-      DisplayStatus ("Resize when completely full", isPassed);
+         if (queue.Dequeue () != (char)('A' + j)) iPassed = false;
+      DisplayStatus ("Resize when completely full", iPassed);
    }
 
    // Verify resize after circular wrap around
    static void Test6 () {
       TQueue<char> queue = new ();
-      bool isPassed = true;
+      bool iPassed = true;
       for (int i = 0; i < 4; i++) queue.Enqueue ((char)('A' + i));
       queue.Dequeue ();
       queue.Dequeue ();
@@ -104,8 +104,8 @@ class TestCases {
       queue.Enqueue ('F');
       queue.Enqueue ('G');
       for (int j = 0; !queue.IsEmpty; j++)
-         if (queue.Dequeue () != (char)('C' + j)) isPassed = false;
-      DisplayStatus ("Resize after circular wrap around", isPassed);
+         if (queue.Dequeue () != (char)('C' + j)) iPassed = false;
+      DisplayStatus ("Resize after circular wrap around", iPassed);
    }
    #endregion
 }

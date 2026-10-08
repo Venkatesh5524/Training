@@ -8,7 +8,6 @@
 
 #region Queue -------------------------------------------------------------------------------------
 /// <summary>Implemention of custom queue that adds and removes elements in FIFO order</summary>
-/// <typeparam name="T"></typeparam>
 class TQueue<T> {
    #region Property -------------------------------------------------
    /// <summary>Checks whether the queue contains no elements</summary>
@@ -17,7 +16,6 @@ class TQueue<T> {
 
    #region Methods --------------------------------------------------
    /// <summary>Adds an element to the rear of the queue</summary>
-   /// <param name="value"></param>
    public void Enqueue (T value) {
       if (mCount == mData.Length) Resize ();
       mData[mPos] = value;
@@ -26,7 +24,6 @@ class TQueue<T> {
    }
 
    /// <summary>Removes and returns the element from the front of the queue</summary>
-   /// <exception cref="InvalidOperationException"></exception>
    public T Dequeue () {
       if (IsEmpty) throw new InvalidOperationException ("Queue Empty");
       T value = mData[mFree];
