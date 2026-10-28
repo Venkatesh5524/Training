@@ -19,9 +19,6 @@ class EvalException (string message) : Exception (message) { }
 /// <summary>Evaluates expressions with operator precedence, parentheses, functions, and variable
 /// assignments while handling errors</summary>
 class Evaluator () {
-   #region Property -------------------------------------------------
-   public int BasePriority { get; private set; }
-   #endregion
 
    #region Method ---------------------------------------------------
    /// <summary>Evaluates a mathematical expression and returns its result</summary>
@@ -36,6 +33,7 @@ class Evaluator () {
          if (token is TError err) throw new EvalException (err.Message);
          tokens.Add (token);
       }
+      if (tokenizer.BasePriority != 0) Error ("Mismatched paranthesis");
       // Identify a variable assignment and remove the variable and '=' tokens from the expression
       if (tokens.Count > 1 && tokens[0] is TVariable tvar && tokens[1] is TOpBinary bin
                                                                           && bin.Op == '=') {
@@ -44,12 +42,18 @@ class Evaluator () {
       }
       foreach (var token in tokens) Process (token);
       while (mOperators.Count > 0) ApplyOperator ();
-      if (BasePriority != 0) Error ("Mismatched paranthesis");
       if (mOperators.Count > 0) Error ("Too many operators");
       if (mOperands.Count > 1) Error ("Too many operands");
       double f = mOperands.Pop ();
       if (tVar != null) mVariables[tVar.Name] = f;
       return f;
+   }
+
+   /// <summary>Retrieves the value of the specified variable</summary>
+   public double GetVariable (string name) {
+      if (mVariables.TryGetValue (name, out double value)) return value;
+      Error ($"Unknown variable {name}");
+      return 0;
    }
    #endregion
 
@@ -93,12 +97,10 @@ class Evaluator () {
             mOperands.Push (num.Value);
             break;
          case TOperator op:
-            op.FinalPriority = op.Priority + BasePriority;
-            while (!OkToPush (op)) ApplyOperator ();
+            if (op is not (TOpUnary or TOpFunc)) while (!OkToPush (op)) ApplyOperator ();
             mOperators.Push (op);
             break;
-         case TPunctuation p:
-            BasePriority += p.Punct == '(' ? 10 : -10;
+         case TPunctuation:
             break;
          default: Error ($"Unknown token: {token}"); break;
       }
@@ -109,7 +111,6 @@ class Evaluator () {
       tokens.Clear ();
       mOperands.Clear ();
       mOperators.Clear ();
-      BasePriority = 0;
       tVar = null;
       tTemp = null;
    }
@@ -118,21 +119,11 @@ class Evaluator () {
    void Error (string s) => throw new EvalException (s);
 
    // Determines whether the operator can be pushed onto the operator stack
-   public bool OkToPush (TOperator op) {
+   bool OkToPush (TOperator op) {
       if (mOperators.Count == 0) return true;
       TOperator prev = mOperators.Peek ();
-      return prev.FinalPriority < op.FinalPriority ||
-             (prev.FinalPriority == op.FinalPriority && op is TOpBinary { Op: '^' }) ||
-             (prev is TOpUnary && op is TOpFunc) ||
-             (prev is TOpUnary or TOpFunc && op is TOpBinary { Op: '^' } &&
-             prev.FinalPriority - op.FinalPriority < 10);
-   }
-
-   // Retrieves the value of the specified variable
-   public double GetVariable (string name) {
-      if (mVariables.TryGetValue (name, out double value)) return value;
-      Error ($"Unknown variable {name}");
-      return 0;
+      return prev.Priority < op.Priority ||
+             (prev.Priority == op.Priority && op is TOpBinary { Op: '^' });
    }
    #endregion
 

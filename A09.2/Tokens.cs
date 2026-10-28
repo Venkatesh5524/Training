@@ -59,23 +59,18 @@ class TVariable (Evaluator eval, string name) : TNumber () {
 
 #region class TOperator ---------------------------------------------------------------------------
 /// <summary>Abstract base class for operators, providing priority and evaluator access</summary>
-abstract class TOperator (Evaluator eval) : Token {
+abstract class TOperator : Token {
    #region Property -------------------------------------------------
    public abstract int Priority { get; }
-   public int FinalPriority { get; set; }
-   #endregion
-
-   #region Private data ---------------------------------------------
-   readonly protected Evaluator mEval = eval;
    #endregion
 }
 #endregion
 
 #region class TOpUnary ----------------------------------------------------------------------------
 /// <summary>Represents unary operators such as "+", "-", "++", and "--"</summary>
-class TOpUnary (Evaluator eval, string op) : TOperator (eval) {
+class TOpUnary (Tokenizer tokenizer, string op) : TOperator {
    #region Property -------------------------------------------------
-   public override int Priority => 5;
+   public override int Priority { get; } = 3 + tokenizer.BasePriority;
    public string Op { get; } = op;
    #endregion
 
@@ -86,20 +81,20 @@ class TOpUnary (Evaluator eval, string op) : TOperator (eval) {
          "-" => -num,
          "++" => num + 1,
          "--" => num - 1,
-         _ => throw new InvalidOperationException ($"Unknown Unary Operator '{Op}'"),
+         _ => throw new EvalException ($"Unknown Unary Operator '{Op}'"),
       };
    }
 
-   public override string ToString () => $"Unary : {Op}";
+   public override string ToString () => $"Unary : {Op} Priority : {Priority}";
    #endregion
 }
 #endregion
 
 #region class TOpBinary ---------------------------------------------------------------------------
 /// <summary>Represents binary operators such as '+', '-', '*', '/', '^', and '='</summary>
-class TOpBinary (Evaluator eval, char op) : TOperator (eval) {
+class TOpBinary (Tokenizer tokenizer, char op) : TOperator {
    #region Property -------------------------------------------------
-   public override int Priority => sPriority[Op];
+   public override int Priority { get; } = sPriority[op] + tokenizer.BasePriority;
    public char Op { get; } = op;
    #endregion
 
@@ -114,12 +109,12 @@ class TOpBinary (Evaluator eval, char op) : TOperator (eval) {
          _ => throw new EvalException ($"Unknown Operator '{Op}'"),
       };
 
-   public override string ToString () => $"Operator : {Op}";
+   public override string ToString () => $"Operator : {Op} Priority : {Priority}";
    #endregion
 
    #region Private data ---------------------------------------------
    static Dictionary<char, int> sPriority = new () {
-      ['+'] = 1, ['-'] = 1, ['*'] = 2, ['/'] = 2, ['^'] = 3, ['='] = 0,
+      ['+'] = 1, ['-'] = 1, ['*'] = 2, ['/'] = 2, ['^'] = 5, ['='] = 0,
    };
    #endregion
 }
@@ -127,10 +122,10 @@ class TOpBinary (Evaluator eval, char op) : TOperator (eval) {
 
 #region class TOpFunc -----------------------------------------------------------------------------
 /// <summary>Represents mathematical functions</summary>
-class TOpFunc (Evaluator eval, string func) : TOperator (eval) {
+class TOpFunc (Tokenizer tokenizer, string func) : TOperator {
    #region Property -------------------------------------------------
    public string Func { get; } = func;
-   public override int Priority => 4;
+   public override int Priority { get; } = 4 + tokenizer.BasePriority;
    #endregion
 
    #region Method ---------------------------------------------------
@@ -151,7 +146,7 @@ class TOpFunc (Evaluator eval, string func) : TOperator (eval) {
       double R2D (double f) => f * 180 / Math.PI;
    }
 
-   public override string ToString () => $"Function : {Func}";
+   public override string ToString () => $"Function : {Func} Priority : {Priority}";
    #endregion
 }
 #endregion
