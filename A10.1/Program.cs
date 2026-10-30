@@ -25,7 +25,7 @@ class Program {
          var (drive, dir, fileName, ext, isPassed) = FileParse (input);
          Console.Write ($" {input, -30}| {drive, -5}| {dir, -15}| {fileName, -10}| {ext, -10}| ");
          Console.ForegroundColor = isPassed ? ConsoleColor.Green : ConsoleColor.Red;
-         Console.WriteLine ($"{(isPassed ? "Pass" : "Fail"), -10}");
+         Console.WriteLine ($"{(isPassed ? "VALID" : "INVALID"), -10}");
          Console.ResetColor ();
       }
    }
