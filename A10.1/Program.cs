@@ -20,7 +20,7 @@ class Program {
                          @"C:\DIR\ARCHIVE.TAR.GZ", @"C:\WORK23\R.TXT"];
       Console.WriteLine ($" {"Input", -30}| {"Drive", -5}| {"Directory", -15}| {"FileName", -10}" +
                          $"| {"Extension", -10}| {"Status", -10}");
-      Console.WriteLine (string.Join ("", Enumerable.Repeat ('-', 100)));
+      Console.WriteLine (new string ('-',100));
       foreach (string input in inputs) {
          var (drive, dir, fileName, ext, isPassed) = FileParse (input);
          Console.Write ($" {input, -30}| {drive, -5}| {dir, -15}| {fileName, -10}| {ext, -10}| ");
