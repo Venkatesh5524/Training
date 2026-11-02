@@ -48,7 +48,7 @@ class Program {
             (D or E, >= 'A' and <= 'Z') => (E, () => file.Append(c)),
             (E, '\\') => (F, () => { dir.Append (file); file.Clear (); }),
             (F or G, >= 'A' and <= 'Z') => (G, () => file.Append (c)),
-            (G, '\\') => (F, () => { dir.Append (',').Append (file); file.Clear (); }),
+            (G, '\\') => (F, () => { dir.Append ('/').Append (file); file.Clear (); }),
             (G, '.') => (H, none),
             (H or I, >= 'A' and <= 'Z') => (I, () => ext.Append(c)),
             (I, '~') => (J, none),
