@@ -29,48 +29,45 @@ class Program {
    // Parses the input string and returns a double value.
    static double DoubleParse (string input) {
       input = input.Trim ();
-      int index = 0, len = input.Length, sign = 1;
+      int index = 0, len = input.Length;
       // Validates that the input is not empty
       if (len == 0) return double.NaN;
       // Handles the double starting with '+' or '-'
-      double result = 0;
-      var (signedDigit, digitCount) = ParseSignedDigits (true);
-      result += signedDigit;
+      var (digit, digitCount, sign) = ParseDigits (true, ref index, ref input);
+      double result = digit;
       // Ensures that at least one digit is present before the decimal point
       if (index < len && digitCount == 0) return double.NaN;
       // Checks for a decimal point
       if (index < len && input[index] == '.') {
          index++;
-         var (dec, decDigits) = ParseSignedDigits (false);
+         var (dec, decDigits, _) = ParseDigits (false, ref index, ref input);
          // Ensures that the decimal point is followed by digits
          if (decDigits == 0) return double.NaN;
          result += dec / Math.Pow (10, decDigits);
       }
+      result *= sign;
       // Checks for an exponent
       if (index < len && (input[index] == 'E' || input[index] == 'e')) {
          index++;
-         var (expo, expoDigits) = ParseSignedDigits (true);
+         var (expo, expoDigits, expoSign) = ParseDigits (true, ref index, ref input);
          // Ensures that the exponent contains digits
          if (expoDigits == 0) return double.NaN;
-         result *= Math.Pow (10, expo);
+         result *= Math.Pow (10, expo*expoSign);
       }
       // Rejects the input when unprocessed characters remain
       if (index < len) return double.NaN;
       return result;
 
       // Extracts consecutive digits and returns the number along with its digit count and sign
-      (int signedDigits, int count) ParseSignedDigits (bool parseSign) {
-         int digits = 0, count = 0;
-         if (parseSign && index < len && (input[index] == '+' || input[index] == '-')) {
-            sign = input[index] == '-' ? -1 : 1;
-            index++;
-         }
+      static (int Digits, int count, int sign) ParseDigits (bool parseSign, ref int index, ref string input) {
+         int digits = 0, count = 0, len = input.Length, sign = 1;
+         if (parseSign && index < len && (input[index] == '+' || input[index] == '-'))
+            sign = input[index++] == '-' ? -1 : 1;
          while (index < len && char.IsDigit (input[index])) {
-            digits = digits * 10 + (input[index] - '0');
+            digits = digits * 10 + (input[index++] - '0');
             count++;
-            index++;
          }
-         return (digits * sign, count);
+         return (digits, count, sign);
       }
    }
    #endregion
