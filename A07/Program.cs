@@ -33,14 +33,14 @@ class Program {
       // Validates that the input is not empty
       if (len == 0) return double.NaN;
       // Handles the double starting with '+' or '-'
-      var (digit, digitCount, sign) = ParseDigits (true, ref index, input);
+      var (digit, digitCount, sign) = ParseDigits (input, true, ref index);
       double result = digit;
       // Ensures that at least one digit is present before the decimal point
       if (index < len && digitCount == 0) return double.NaN;
       // Checks for a decimal point
       if (index < len && input[index] == '.') {
          index++;
-         var (dec, decDigits, _) = ParseDigits (false, ref index, input);
+         var (dec, decDigits, _) = ParseDigits (input, false, ref index);
          // Ensures that the decimal point is followed by digits
          if (decDigits == 0) return double.NaN;
          result += dec / Math.Pow (10, decDigits);
@@ -49,7 +49,7 @@ class Program {
       // Checks for an exponent
       if (index < len && (input[index] == 'E' || input[index] == 'e')) {
          index++;
-         var (expo, expoDigits, expoSign) = ParseDigits (true, ref index, input);
+         var (expo, expoDigits, expoSign) = ParseDigits (input, true, ref index);
          // Ensures that the exponent contains digits
          if (expoDigits == 0) return double.NaN;
          result *= Math.Pow (10, expo*expoSign);
@@ -59,7 +59,8 @@ class Program {
       return result;
 
       // Extracts consecutive digits and returns the number along with its digit count and sign
-      static (int Digits, int count, int sign) ParseDigits (bool parseSign, ref int index, string input) {
+      // Returns the sign for cases like -0.3, where the integer part is zero.
+      static (int Digits, int count, int sign) ParseDigits (string input, bool parseSign, ref int index) {
          int digits = 0, count = 0, len = input.Length, sign = 1;
          if (parseSign && index < len && (input[index] == '+' || input[index] == '-'))
             sign = input[index++] == '-' ? -1 : 1;
