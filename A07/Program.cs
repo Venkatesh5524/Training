@@ -52,7 +52,7 @@ class Program {
          var (expo, expoDigits, expoSign) = ParseDigits (input, true, ref index);
          // Ensures that the exponent contains digits
          if (expoDigits == 0) return double.NaN;
-         result *= Math.Pow (10, expo*expoSign);
+         result *= Math.Pow (10, expo * expoSign);
       }
       // Rejects the input when unprocessed characters remain
       if (index < len) return double.NaN;
