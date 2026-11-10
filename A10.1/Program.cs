@@ -34,7 +34,7 @@ class Program {
    #region Implementation -------------------------------------------
    //Parses a file path into drive, directory, file name, extension and returns its parsing status
    static (string, string, string, string, bool) FileParse (string input) {
-      input = input.Trim () + "~";
+      input = input.Trim ().ToUpper() + "~";
       EState s = A;
       Action none = () => { };
       Action todo;
