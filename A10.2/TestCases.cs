@@ -32,8 +32,8 @@ class TestCases {
    // Tests if dequeue operations throw an exception for an empty deque
    static void TestEmptyDQueue () {
       TDQueue<int> q = new ();
-      PrintStatus ("DequeueFront on empty deque", ThrowsEmpty (q.DequeueFront));
-      PrintStatus ("DequeueRear on empty deque", ThrowsEmpty (q.DequeueRear));
+      PrintStatus ("DequeueFront on empty DQueue", ThrowsEmpty (q.DequeueFront));
+      PrintStatus ("DequeueRear on empty DQueue", ThrowsEmpty (q.DequeueRear));
    }
 
    // Tests double ended queue insertion and validates the order of removed elements
