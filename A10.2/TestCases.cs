@@ -29,7 +29,7 @@ class TestCases {
    #endregion
 
    #region Implementation -------------------------------------------
-   // Tests if dequeue operations throw an exception for an empty deque
+   // Tests if dequeue operations throw an exception for an empty double ended queue
    static void TestEmptyDQueue () {
       TDQueue<int> q = new ();
       PrintStatus ("DequeueFront on empty DQueue", ThrowsEmpty (q.DequeueFront));

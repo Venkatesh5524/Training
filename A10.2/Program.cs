@@ -6,7 +6,7 @@
 // Program to implement and test a generic double ended queue using a circular array.
 // ------------------------------------------------------------------------------------------------
 
-#region class Program -----------------------------------------------------------------------------------
+#region class Program -----------------------------------------------------------------------------
 class Program {
    #region Methods --------------------------------------------------
    static void Main () => TestCases.Run ();
