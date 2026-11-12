@@ -41,18 +41,21 @@ class TDeque<T> {
       mEnd = mCount;
    }
 
+   // Inserts an element at the specified end of the deque
    void Enqueue (T value, EState state) {
-      if (mCount == mData.Length) Resize ();
+      int capacity = mData.Length;
+      if (mCount == capacity) Resize ();
       if(state is EState.Rear) {
          mData[mEnd] = value;
-         mEnd = (mEnd + 1) % mData.Length;
+         mEnd = (mEnd + 1) % capacity;
       } else {
-         mStart = (mStart + mData.Length - 1) % mData.Length;
+         mStart = (mStart + capacity - 1) % capacity;
          mData[mStart] = value;
       }
       mCount++;
    }
 
+   // Removes and returns an element from the specified end of the deque
    T Dequeue (EState state) {
       if (IsEmpty) throw new InvalidOperationException ("Queue Empty");
       int capacity = mData.Length;
@@ -64,7 +67,7 @@ class TDeque<T> {
       } else {
          value = mData[mStart];
          mData[mStart] = default!;
-         mStart = (mStart + 1) % mData.Length;
+         mStart = (mStart + 1) % capacity;
       }
       mCount--;
       return value;
