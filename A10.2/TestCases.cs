@@ -14,14 +14,14 @@ class TestCases {
    #region Methods --------------------------------------------------
    /// <summary>Runs all double ended queue test cases</summary>
    public static void Run () {
-      TestEmptyDeque ();
-      TestDeque ("EnqueueFront and DequeueRear order", count: 4, front: true);
-      TestDeque ("EnqueueRear and DequeueFront order", count: 4, front: false);
+      TestEmptyDQueue ();
+      TestDQueue ("EnqueueFront and DequeueRear order", count: 4, front: true);
+      TestDQueue ("EnqueueRear and DequeueFront order", count: 4, front: false);
       TestMixedOrder ();
       TestWrap ("Circular wrap at rear", skipStart: 4, skipCount: 2, count: 6, front: false);
       TestWrap ("Circular wrap at front", skipStart: 4, skipCount: 2, count: 6, front: true);
-      TestDeque ("Resize using EnqueueRear", count: sData.Length, front: false);
-      TestDeque ("Resize using EnqueueFront", count: sData.Length, front: true);
+      TestDQueue ("Resize using EnqueueRear", count: sData.Length, front: false);
+      TestDQueue ("Resize using EnqueueFront", count: sData.Length, front: true);
       TestWrap ("Resize after circular wrapping", skipStart: 4, skipCount: 2, count: sData.Length, front: true);
       TestIsEmpty ();
       TestCount ();
@@ -30,14 +30,14 @@ class TestCases {
 
    #region Implementation -------------------------------------------
    // Tests if dequeue operations throw an exception for an empty deque
-   static void TestEmptyDeque () {
-      TDQueue<int> deque = new ();
-      PrintStatus ("DequeueFront on empty deque", ThrowsEmpty (deque.DequeueFront));
-      PrintStatus ("DequeueRear on empty deque", ThrowsEmpty (deque.DequeueRear));
+   static void TestEmptyDQueue () {
+      TDQueue<int> q = new ();
+      PrintStatus ("DequeueFront on empty deque", ThrowsEmpty (q.DequeueFront));
+      PrintStatus ("DequeueRear on empty deque", ThrowsEmpty (q.DequeueRear));
    }
 
    // Tests double ended queue insertion and validates the order of removed elements
-   static void TestDeque (string message, int count, bool front) {
+   static void TestDQueue (string message, int count, bool front) {
       TDQueue<int> q = new ();
       Enqueue (q, 0, count, front);
       bool passed = Compare (q, 0, count, !front);

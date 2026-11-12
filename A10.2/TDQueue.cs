@@ -13,7 +13,7 @@ class TDQueue<T> {
    /// <summary>Checks whether the double ended queue contains no elements</summary>
    public bool IsEmpty => mCount == 0;
 
-   /// <summary>Gets the number of elements in the doubl ended queue</summary>
+   /// <summary>Gets the number of elements in the double ended queue</summary>
    public int Count => mCount;
    #endregion
 
