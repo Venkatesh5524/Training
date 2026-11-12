@@ -3,7 +3,7 @@
 // Copyright (c) TRUMPF Metamation India.
 // ------------------------------------------------------------------------------------------------
 // Program.cs
-// Program to implement and test a generic double ennded queue using a circular array.
+// Program to implement and test a generic double ended queue using a circular array.
 // ------------------------------------------------------------------------------------------------
 
 #region Program -----------------------------------------------------------------------------------
