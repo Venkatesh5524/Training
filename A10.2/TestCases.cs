@@ -62,7 +62,7 @@ class TestCases {
    // Tests circular buffer wraparound by removing elements and reusing freed positions
    static void TestWrap (string message, int skipStart, int skipCount, int count, bool front) {
       TDeque<int> deque = new ();
-      Enqueue (deque, 0, skipStart, isFront: front);
+      Enqueue (deque, 0, skipStart, front);
       for (int i = 0; i < skipCount; i++) {
          if (front) deque.DequeueRear ();
          else deque.DequeueFront ();
