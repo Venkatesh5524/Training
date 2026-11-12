@@ -2,7 +2,7 @@
 // Training ~ A training program for new joinees at Metamation, Batch - July 2026.
 // Copyright (c) TRUMPF Metamation India.
 // ------------------------------------------------------------------------------------------------
-// TDeque.cs
+// Deque.cs
 // Double Ended Queue implementation with circular buffer.
 // ------------------------------------------------------------------------------------------------
 
