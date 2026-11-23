@@ -3,9 +3,10 @@
 // Copyright (c) TRUMPF Metamation India.
 // ------------------------------------------------------------------------------------------------
 // Wordle.cs
-// Implements the Wordle game by handling user input, word validation, and result display.
+// Implements the Wordle game by handling user input, word validation and result display.
 // ------------------------------------------------------------------------------------------------
 
+using System.Reflection;
 using System.Text;
 using static System.Console;
 
@@ -13,9 +14,9 @@ using static System.Console;
 class Wordle {
    #region Constructor ----------------------------------------------
    /// <summary>Initializes the game with the supplied word list and target word</summary>
-   public Wordle (WordList wordList) {
-      mWordList = wordList;
-      mWord = wordList.GuessingWord;
+   public Wordle () {
+      mValidWords = [.. ReadWordList ("Validate.txt")];
+      mSelectWords = ReadWordList ("guess.txt");
    }
    #endregion
 
@@ -23,20 +24,21 @@ class Wordle {
    /// <summary>Runs the Wordle game until the word is guessed or attempts are exhausted</summary>
    public void Run () {
       Display ();
+      string word = SelectWord();
       while (true) {
          CursorTop = mRow;
-         string guess = GuessWord ();
-         EState state = UpdateState (guess, mWord);
+         string guess = ReadGuess ();
+         EState state = UpdateState (guess, word);
          Display ();
          switch (state) {
             case EState.Invalid:
                PrintMessage ($"{guess} is not a valid word", ConsoleColor.Yellow);
                break;
             case EState.Correct:
-               PrintMessage ($"You guessed the word {mWord}!", ConsoleColor.Green);
+               PrintMessage ($"You guessed the word {word}!", ConsoleColor.Green);
                return;
             case EState.AttemptsExhausted:
-               PrintMessage ($"The word was {mWord}", ConsoleColor.Red);
+               PrintMessage ($"The word was {word}", ConsoleColor.Red);
                return;
          }
       }
@@ -55,7 +57,7 @@ class Wordle {
             if (mLetters[position].letter != default) {
                var (c, color) = mLetters[position];
                DisplayLetter (c, color);
-            } else Write ("\u00b7 ");
+            } else Write (mDot);
          }
          WriteLine ();
       }
@@ -79,21 +81,21 @@ class Wordle {
    }
 
    // Accepts keyboard input and constructs a five-letter word guess
-   string GuessWord () {
+   string ReadGuess () {
       int cursorPos = WindowWidth / 2 - 5;
       CursorLeft = cursorPos;
-      Write ("◌ ");
+      Write (mCircle);
       StringBuilder guess = new ();
       while (true) {
          var key = ReadKey (true);
          switch (key.Key) {
-            case ConsoleKey.Backspace:
+            case ConsoleKey.Backspace or ConsoleKey.LeftArrow:
                if (guess.Length > 0) {
                   guess.Remove (guess.Length - 1, 1);
                   cursorPos -= 2;
                   CursorLeft = cursorPos;
-                  Write ("◌ ");
-                  if (guess.Length < 4) Write ("\u00b7 ");
+                  Write (mCircle);
+                  if (guess.Length < WORDSIZE - 1) Write (mDot);
                   CursorLeft = cursorPos;
                }
                break;
@@ -107,12 +109,15 @@ class Wordle {
                   Write ($"{c} ");
                   guess.Append (c);
                   cursorPos += 2;
-                  if (guess.Length < 5) Write ("◌ ");
+                  if (guess.Length < WORDSIZE) Write (mCircle);
                }
                break;
          }
       }
    }
+
+   // Selects a random word from the available words
+   string SelectWord () => mSelectWords[Random.Shared.Next (mSelectWords.Length)];
 
    // Displays a centered message in the specified foreground color
    void PrintMessage (string message, ConsoleColor color) {
@@ -128,8 +133,10 @@ class Wordle {
 
    // Validates the guess, evaluates letter positions, and updates their colors
    EState UpdateState (string guess, string word) {
-      if (mWordList.IsValid (guess)) {
+      if (mValidWords.Contains (guess)) {
+         // Stores the positions of letters already matched in the target word.
          HashSet<int> matchedPositions = [];
+         // Identify letters that match at the correct positions
          for (int index = 0; index < WORDSIZE; index++) {
             char ch = guess[index];
             if (ch == word[index]) {
@@ -138,6 +145,7 @@ class Wordle {
                UpdateKeyColor (ch, ConsoleColor.Green);
             }
          }
+         // Identify letters present in the word but at incorrect positions
          for (int i = 0; i < WORDSIZE; i++) {
             char guessChar = guess[i];
             int position = mRow * WORDSIZE + i;
@@ -152,6 +160,7 @@ class Wordle {
                   }
                }
             }
+            // Assigns the guessed character and updates its key color if the position is empty
             if (mLetters[position] == default) {
                mLetters[position] = new (guessChar, ConsoleColor.DarkGray);
                UpdateKeyColor (guessChar, ConsoleColor.DarkGray);
@@ -172,12 +181,26 @@ class Wordle {
    }
    #endregion
 
+   // Reads words from the specified embedded text file and returns them as an array
+   string[] ReadWordList(string name) {
+      var assembly = Assembly.GetExecutingAssembly ();
+      var resourceName = assembly.GetManifestResourceNames ()
+         .First (resourse => resourse.EndsWith (name));
+      using var stream = assembly.GetManifestResourceStream (resourceName)!;
+      using var reader = new StreamReader (stream);
+      string[] words = reader.ReadToEnd ()
+                             .Split (["\r\n", "\r", "\n"], StringSplitOptions.RemoveEmptyEntries);
+      return words;
+   }
+
    #region Private Data ---------------------------------------------
    LetterColor[] mLetters = new LetterColor[ATTEMPTS * WORDSIZE];
    Dictionary<char, ConsoleColor> mKeyColor = [];
-   WordList mWordList;
-   string mWord;
+   HashSet<string> mValidWords;
+   string[] mSelectWords;
    int mRow = 0;
+   string mCircle = "◌ ";
+   string mDot = "\u00b7 ";
    #endregion
 
    #region Constants ------------------------------------------------

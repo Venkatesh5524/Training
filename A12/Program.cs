@@ -6,18 +6,17 @@
 // Entry point for the wordle game.
 // ------------------------------------------------------------------------------------------------
 
-#region class Program -----------------------------------------------------------------------------
 using System.Text;
 using static System.Console;
 
+#region class Program -----------------------------------------------------------------------------
 class Program {
    #region Methods --------------------------------------------------
    static void Main () {
       OutputEncoding = new UnicodeEncoding ();
       CursorVisible = false;
       try {
-         WordList word = new ();
-         Wordle wordle = new (word);
+         Wordle wordle = new ();
          wordle.Run ();
       } catch (Exception ex) {
          WriteLine ($"Error: {ex.Message}");
